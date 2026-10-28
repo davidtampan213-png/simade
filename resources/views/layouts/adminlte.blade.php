@@ -12,7 +12,7 @@
     @vite(['resources/scss/adminlte.scss', 'resources/js/adminlte.js'])
     @stack('styles')
 </head>
-<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+<body class="{{ session('active_role') === 'dosen' ? 'layout-dosen' : 'layout-mahasiswa' }} layout-fixed sidebar-expand-lg bg-body-tertiary">
     <a href="#main-content" class="visually-hidden-focusable position-absolute top-0 start-0 m-2 p-2 bg-white text-success z-3 rounded">Lewati ke konten utama</a>
 
     <div class="app-wrapper">

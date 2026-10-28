@@ -15,15 +15,41 @@
             --simade-emerald: #047857;
             --simade-emerald-dark: #065f46;
             min-height: 100vh;
-            background: #f4f7f5;
+            background-color: #f4f7f5;
             color: #1f2937;
             font-family: 'Source Sans 3', sans-serif;
+            position: relative;
         }
-        .auth-shell { min-height: 100vh; }
+        
+        // Foto latar samar di halaman auth (logo.png di atas foto)
+        body.auth-page::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: url('/images/bg-login.jpg') center / cover no-repeat;
+            opacity: 0.10;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .auth-shell { 
+            min-height: 100vh; 
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Konten utama area abu muda tanpa foto */
+        .auth-main { 
+            padding: 2rem 1rem;
+            background-color: rgba(244, 247, 245, 0.9);
+            backdrop-filter: blur(4px);
+        }
+        
         .auth-brand-panel {
-            background: #064e3b;
+            background: linear-gradient(160deg, #064e3b 0%, #047857 100%);
             color: #fff;
             padding: 3rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
         .auth-brand-inner { max-width: 27rem; }
         .auth-logo {

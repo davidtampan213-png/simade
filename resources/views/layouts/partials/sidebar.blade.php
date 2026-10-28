@@ -67,14 +67,14 @@ $systemMenus = [
 ];
 @endphp
 
-<aside class="app-sidebar bg-dark shadow" data-bs-theme="dark">
+<aside class="app-sidebar bg-white shadow-sm" data-bs-theme="light">
     <!-- Sidebar Brand -->
-    <div class="sidebar-brand border-bottom border-secondary border-opacity-25 px-3 py-2.5 d-flex align-items-center justify-content-between">
-        <a href="{{ $activeRole === 'dosen' ? route('dashboard.dosen') : route('dashboard.mahasiswa') }}" class="brand-link d-flex align-items-center text-decoration-none text-white gap-2">
+    <div class="sidebar-brand border-bottom px-3 py-2.5 d-flex align-items-center justify-content-between">
+        <a href="{{ $activeRole === 'dosen' ? route('dashboard.dosen') : route('dashboard.mahasiswa') }}" class="brand-link d-flex align-items-center text-decoration-none text-dark gap-2">
             <img src="{{ asset('logo.png') }}" alt="Logo UNSIQ" class="brand-image img-fluid" style="height: 38px; width: auto; max-width: 45px; object-fit: contain;">
             <div class="d-flex flex-column lh-1">
-                <span class="brand-text fw-bold fs-5 tracking-wide text-white">SIMADE</span>
-                <small class="text-white-50" style="font-size: 0.72rem; letter-spacing: 0.03em;">PORTAL AKADEMIK</small>
+                <span class="brand-text fw-bold fs-5 tracking-wide text-dark">SIMADE</span>
+                <small class="text-secondary" style="font-size: 0.72rem; letter-spacing: 0.03em;">PORTAL AKADEMIK</small>
             </div>
         </a>
     </div>
@@ -84,7 +84,7 @@ $systemMenus = [
         <nav class="mt-2">
             <ul class="nav sidebar-menu flex-column gap-1 px-2" data-lte-toggle="treeview" role="menu" data-accordion="false">
                 
-                <li class="nav-header text-uppercase text-white-50 px-3 pt-2 pb-1" style="font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em;">
+                <li class="nav-header text-uppercase px-3 pt-2 pb-1" style="font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em;">
                     Menu Utama ({{ ucfirst($activeRole) }})
                 </li>
 
@@ -114,7 +114,7 @@ $systemMenus = [
                     @endif
                 @endforeach
 
-                <li class="nav-item mt-2 pt-2 border-top border-secondary border-opacity-25">
+                <li class="nav-item mt-2 pt-2 border-top">
                     <form method="POST" action="{{ route('logout') }}" class="m-0">
                         @csrf
                         <button type="submit" class="nav-link rounded-1 d-flex align-items-center gap-2 py-2 px-3 text-danger w-100 border-0 bg-transparent text-start">
