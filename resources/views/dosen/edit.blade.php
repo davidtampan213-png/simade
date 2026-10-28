@@ -1,104 +1,96 @@
-<x-app-layout>
+<x-adminlte-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-emerald-800 leading-tight">
-            {{ __('Edit Data Dosen') }}
-        </h2>
+        <h1 class="h3 mb-0">Edit Data Dosen</h1>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-
-                    @if ($errors->any())
-                        <div class="mb-4">
-                            <ul class="list-disc list-inside text-sm text-red-600">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    <form method="POST" action="{{ route('dosen.update', $dosen->id) }}">
-                        @csrf
-                        @method('PUT')
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                            <!-- NIP -->
-                            <div class="mb-4">
-                                <label for="nip" class="block font-medium text-sm text-gray-700">NIP</label>
-                                <input id="nip" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50" type="text" name="nip" value="{{ old('nip', $dosen->nip) }}" required autofocus />
-                            </div>
-
-                            <!-- Nama -->
-                            <div class="mb-4">
-                                <label for="nama" class="block font-medium text-sm text-gray-700">Nama Lengkap</label>
-                                <input id="nama" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50" type="text" name="nama" value="{{ old('nama', $dosen->nama) }}" required />
-                            </div>
-
-                            <!-- Jabatan -->
-                            <div class="mb-4">
-                                <label for="jabatan" class="block font-medium text-sm text-gray-700">Jabatan</label>
-                                <select id="jabatan" name="jabatan" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50">
-                                    <option value="">-- Pilih Jabatan --</option>
-                                    @foreach(['Rektor','Dekan','Kepala Prodi','Guru Besar','Lektor Kepala','Lektor','Asisten Ahli'] as $jab)
-                                        <option value="{{ $jab }}" {{ old('jabatan', $dosen->jabatan) == $jab ? 'selected' : '' }}>{{ $jab }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <!-- Prodi -->
-                            <div class="mb-4">
-                                <label for="prodi" class="block font-medium text-sm text-gray-700">Program Studi</label>
-                                <input id="prodi" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50" type="text" name="prodi" value="{{ old('prodi', $dosen->prodi) }}" placeholder="Contoh: S1 Teknik Informatika" />
-                            </div>
-
-                            <!-- Jurusan -->
-                            <div class="mb-4">
-                                <label for="jurusan" class="block font-medium text-sm text-gray-700">Jurusan</label>
-                                <select id="jurusan" name="jurusan" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50" required>
-                                    <option value="">Pilih Jurusan</option>
-                                    @foreach(['Teknik Informatika','Teknik Mesin','Manajemen Informatika','Arsitek','Teknik Sipil'] as $jur)
-                                        <option value="{{ $jur }}" {{ old('jurusan', $dosen->jurusan) == $jur ? 'selected' : '' }}>{{ $jur }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <!-- Status -->
-                            <div class="mb-4">
-                                <label for="status" class="block font-medium text-sm text-gray-700">Status</label>
-                                <select id="status" name="status" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50" required>
-                                    <option value="Aktif" {{ old('status', $dosen->status) == 'Aktif' ? 'selected' : '' }}>Aktif</option>
-                                    <option value="Nonaktif" {{ old('status', $dosen->status) == 'Nonaktif' ? 'selected' : '' }}>Nonaktif</option>
-                                </select>
-                            </div>
-
-                            <!-- No HP -->
-                            <div class="mb-4">
-                                <label for="no_hp" class="block font-medium text-sm text-gray-700">No HP</label>
-                                <input id="no_hp" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50" type="text" name="no_hp" value="{{ old('no_hp', $dosen->no_hp) }}" />
-                            </div>
-
-                            <!-- Alamat -->
-                            <div class="mb-4 md:col-span-2">
-                                <label for="alamat" class="block font-medium text-sm text-gray-700">Alamat</label>
-                                <textarea id="alamat" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50" name="alamat" rows="3">{{ old('alamat', $dosen->alamat) }}</textarea>
-                            </div>
-
-                        </div>
-
-                        <div class="flex items-center justify-end mt-4">
-                            <a href="{{ route('dosen.index') }}" class="underline text-sm text-gray-600 hover:text-gray-900 mr-4">Batal</a>
-                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-emerald-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-emerald-700 active:bg-emerald-900 focus:outline-none focus:border-emerald-900 focus:ring ring-emerald-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                Simpan Perubahan
-                            </button>
-                        </div>
-                    </form>
-
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title mb-0">Formulir Data Dosen</h2>
+        </div>
+        <div class="card-body">
+            @if ($errors->any())
+                <div class="alert alert-danger" role="alert">
+                    <strong>Terdapat kesalahan input:</strong>
+                    <ul class="mb-0 mt-2">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
-            </div>
+            @endif
+
+            <form method="POST" action="{{ route('dosen.update', $dosen->id) }}">
+                @csrf
+                @method('PUT')
+
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <label for="nip" class="form-label">NIP</label>
+                        <input id="nip" class="form-control @error('nip') is-invalid @enderror" type="text" name="nip" value="{{ old('nip', $dosen->nip) }}" required autofocus>
+                        @error('nip')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label for="nama" class="form-label">Nama Lengkap</label>
+                        <input id="nama" class="form-control @error('nama') is-invalid @enderror" type="text" name="nama" value="{{ old('nama', $dosen->nama) }}" required>
+                        @error('nama')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label for="jabatan" class="form-label">Jabatan</label>
+                        <select id="jabatan" name="jabatan" class="form-select @error('jabatan') is-invalid @enderror">
+                            <option value="">-- Pilih Jabatan --</option>
+                            @foreach(['Rektor','Dekan','Kepala Prodi','Guru Besar','Lektor Kepala','Lektor','Asisten Ahli'] as $jab)
+                                <option value="{{ $jab }}" {{ old('jabatan', $dosen->jabatan) == $jab ? 'selected' : '' }}>{{ $jab }}</option>
+                            @endforeach
+                        </select>
+                        @error('jabatan')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label for="prodi" class="form-label">Program Studi</label>
+                        <input id="prodi" class="form-control @error('prodi') is-invalid @enderror" type="text" name="prodi" value="{{ old('prodi', $dosen->prodi) }}" placeholder="Contoh: S1 Teknik Informatika">
+                        @error('prodi')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label for="jurusan" class="form-label">Jurusan</label>
+                        <select id="jurusan" name="jurusan" class="form-select @error('jurusan') is-invalid @enderror" required>
+                            <option value="">Pilih Jurusan</option>
+                            @foreach(['Teknik Informatika','Teknik Mesin','Manajemen Informatika','Arsitek','Teknik Sipil'] as $jur)
+                                <option value="{{ $jur }}" {{ old('jurusan', $dosen->jurusan) == $jur ? 'selected' : '' }}>{{ $jur }}</option>
+                            @endforeach
+                        </select>
+                        @error('jurusan')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label for="status" class="form-label">Status</label>
+                        <select id="status" name="status" class="form-select @error('status') is-invalid @enderror" required>
+                            <option value="Aktif" {{ old('status', $dosen->status) == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                            <option value="Nonaktif" {{ old('status', $dosen->status) == 'Nonaktif' ? 'selected' : '' }}>Nonaktif</option>
+                        </select>
+                        @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label for="no_hp" class="form-label">No HP</label>
+                        <input id="no_hp" class="form-control @error('no_hp') is-invalid @enderror" type="text" name="no_hp" value="{{ old('no_hp', $dosen->no_hp) }}">
+                        @error('no_hp')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="col-12">
+                        <label for="alamat" class="form-label">Alamat</label>
+                        <textarea id="alamat" class="form-control @error('alamat') is-invalid @enderror" name="alamat" rows="3">{{ old('alamat', $dosen->alamat) }}</textarea>
+                        @error('alamat')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a href="{{ route('dosen.index') }}" class="btn btn-outline-secondary">Batal</a>
+                    <button type="submit" class="btn btn-success">Simpan Perubahan</button>
+                </div>
+            </form>
         </div>
     </div>
-</x-app-layout>
+</x-adminlte-layout>

@@ -1,203 +1,284 @@
-<x-app-layout>
+<x-adminlte-layout>
     <x-slot name="header">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div class="flex items-center gap-3">
-                <a href="{{ route('dashboard.mahasiswa') }}" class="text-emerald-600 hover:text-emerald-800">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-lg-between gap-3">
+            <div class="d-flex items-center gap-3">
+                <a href="{{ route('dashboard.mahasiswa') }}" class="text-success text-decoration-none">
+                    <i class="bi bi-arrow-left"></i>
                 </a>
-                <h2 class="font-semibold text-xl text-emerald-800 leading-tight">Laporan Mahasiswa per Fakultas</h2>
+                <h1 class="h3 mb-0 fw-semibold">Laporan Mahasiswa per Fakultas</h1>
             </div>
-            {{-- Tombol Ekspor --}}
-            <div class="flex flex-wrap gap-2">
+            <div class="d-flex flex-wrap gap-2">
                 <a href="{{ route('mahasiswa.laporan.export', array_merge(request()->query(), ['format'=>'excel'])) }}"
-                   class="inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 text-white text-sm rounded-lg hover:bg-teal-700 transition font-medium">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-                    Ekspor Excel
+                   class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
+                    <i class="bi bi-file-earmark-excel"></i> Ekspor Excel
                 </a>
                 <a href="{{ route('mahasiswa.laporan.export', array_merge(request()->query(), ['format'=>'pdf'])) }}"
-                   class="inline-flex items-center gap-1.5 px-4 py-2 bg-rose-600 text-white text-sm rounded-lg hover:bg-rose-700 transition font-medium">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                    Ekspor PDF
+                   class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1">
+                    <i class="bi bi-file-earmark-pdf"></i> Ekspor PDF
                 </a>
             </div>
         </div>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-7">
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show d-flex align-items-start gap-2" role="alert">
+            <i class="bi bi-check-circle-fill mt-1"></i>
+            <div>{{ session('success') }}</div>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Tutup"></button>
+        </div>
+    @endif
 
-            {{-- Filter --}}
-            <div class="bg-white rounded-2xl shadow-sm p-5">
-                <form method="GET" action="{{ route('mahasiswa.laporan') }}" class="flex flex-wrap gap-3 items-end">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wider">Tahun Akademik</label>
-                        <select name="tahun_akademik" class="rounded-lg border-gray-300 text-sm focus:ring-emerald-400 focus:border-emerald-400 shadow-sm">
-                            <option value="">Semua Tahun</option>
-                            @foreach($tahunList as $ta)
-                                <option value="{{ $ta }}" {{ $tahunAkademik == $ta ? 'selected' : '' }}>{{ $ta }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wider">Semester</label>
-                        <select name="semester" class="rounded-lg border-gray-300 text-sm focus:ring-emerald-400 focus:border-emerald-400 shadow-sm">
-                            <option value="">Semua</option>
-                            @for($s=1; $s<=14; $s++)
-                                <option value="{{ $s }}" {{ $semester == $s ? 'selected' : '' }}>Semester {{ $s }}</option>
-                            @endfor
-                        </select>
-                    </div>
-                    <button type="submit" class="px-4 py-2 bg-emerald-600 text-white text-sm rounded-lg hover:bg-emerald-700 transition font-medium">Terapkan</button>
-                    <a href="{{ route('mahasiswa.laporan') }}" class="px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded-lg hover:bg-gray-300 transition font-medium">Reset</a>
-                </form>
-                @if($tahunAkademik || $semester)
-                <p class="mt-3 text-xs text-emerald-700 bg-emerald-50 rounded-lg px-3 py-2">
-                    Filter aktif:
-                    @if($tahunAkademik) Tahun Akademik <strong>{{ $tahunAkademik }}</strong> @endif
-                    @if($semester) &bull; <strong>Semester {{ $semester }}</strong> @endif
-                </p>
-                @endif
-            </div>
+    <div class="row g-3">
+        {{-- Filter --}}
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="GET" action="{{ route('mahasiswa.laporan') }}" class="row g-3 align-items-end">
+                        <div class="col-12 col-sm-5">
+                            <label for="tahun_akademik" class="form-label small fw-semibold text-uppercase">Tahun Akademik</label>
+                            <select id="tahun_akademik" name="tahun_akademik" class="form-select form-select-sm">
+                                <option value="">Semua Tahun</option>
+                                @foreach($tahunList as $ta)
+                                    <option value="{{ $ta }}" {{ $tahunAkademik == $ta ? 'selected' : '' }}>{{ $ta }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-12 col-sm-5">
+                            <label for="semester" class="form-label small fw-semibold text-uppercase">Semester</label>
+                            <select id="semester" name="semester" class="form-select form-select-sm">
+                                <option value="">Semua</option>
+                                @for($s=1; $s<=14; $s++)
+                                    <option value="{{ $s }}" {{ $semester == $s ? 'selected' : '' }}>Semester {{ $s }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="col-12 col-sm-2 d-flex gap-2">
+                            <button type="submit" class="btn btn-success btn-sm w-100 d-flex align-items-center justify-content-center gap-1">
+                                <i class="bi bi-funnel"></i> Terapkan
+                            </button>
+                        </div>
+                    </form>
 
-            {{-- Kartu Ringkasan Global --}}
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
-                @php $cards = [
-                    ['label'=>'Total Mahasiswa','value'=>$totalAll,      'color'=>'emerald','icon'=>'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'],
-                    ['label'=>'Aktif',           'value'=>$totalAktif,   'color'=>'green', 'icon'=>'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],
-                    ['label'=>'Nonaktif',        'value'=>$totalNonaktif,'color'=>'red',   'icon'=>'M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636'],
-                    ['label'=>'Cuti',            'value'=>$totalCuti,    'color'=>'yellow','icon'=>'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'],
-                ]; @endphp
-                @foreach($cards as $c)
-                <div class="bg-white rounded-2xl shadow-sm p-5 border-t-4 border-{{ $c['color'] }}-500">
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">{{ $c['label'] }}</p>
-                    <h3 class="text-3xl font-extrabold text-{{ $c['color'] }}-600">{{ number_format($c['value']) }}</h3>
-                </div>
-                @endforeach
-            </div>
-
-            {{-- Grafik Batang Perbandingan per Fakultas --}}
-            @if($statsPerFakultas->count() > 0)
-            <div class="bg-white rounded-2xl shadow-sm p-6">
-                <h3 class="font-semibold text-gray-700 mb-5">Perbandingan Status per Fakultas</h3>
-                <div class="relative" style="height: {{ max(200, $statsPerFakultas->count() * 60) }}px">
-                    <canvas id="fakultasChart"></canvas>
+                    @if($tahunAkademik || $semester)
+                        <div class="alert alert-light border mt-3 mb-0 d-flex flex-wrap align-items-center justify-content-between gap-2 small">
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                <i class="bi bi-funnel-fill text-success"></i>
+                                <span>Filter aktif:</span>
+                                @if($tahunAkademik)
+                                    <span class="badge text-bg-success">T.A. {{ $tahunAkademik }}</span>
+                                @endif
+                                @if($semester)
+                                    <span class="badge text-bg-success">Semester {{ $semester }}</span>
+                                @endif
+                            </div>
+                            <a href="{{ route('mahasiswa.laporan') }}" class="link-success small">Hapus filter</a>
+                        </div>
+                    @endif
                 </div>
             </div>
-            @endif
+        </div>
 
-            {{-- Tabel Statistik per Fakultas --}}
-            <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-100">
-                    <h3 class="font-semibold text-gray-700">Statistik per Fakultas</h3>
-                    <p class="text-xs text-gray-400 mt-0.5">Klik nama fakultas untuk melihat detail per program studi</p>
+        {{-- Kartu Ringkasan Global --}}
+        <div class="col-12">
+            <div class="row g-3">
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="small-box text-bg-success h-100">
+                        <div class="inner">
+                            <p>Total Mahasiswa</p>
+                            <h3>{{ number_format($totalAll) }}</h3>
+                        </div>
+                        <div class="icon"><i class="bi bi-people"></i></div>
+                        <a href="{{ route('mahasiswa.index', array_filter(['tahun_akademik' => $tahunAkademik, 'semester' => $semester])) }}"
+                           class="small-box-footer">Lihat detail <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="small-box text-bg-primary h-100">
+                        <div class="inner">
+                            <p>Mahasiswa Aktif</p>
+                            <h3>{{ number_format($totalAktif) }}</h3>
+                        </div>
+                        <div class="icon"><i class="bi bi-person-check"></i></div>
+                        <a href="{{ route('mahasiswa.index', array_filter(['status' => 'Aktif', 'tahun_akademik' => $tahunAkademik, 'semester' => $semester])) }}"
+                           class="small-box-footer">Lihat detail <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="small-box text-bg-danger h-100">
+                        <div class="inner">
+                            <p>Mahasiswa Nonaktif</p>
+                            <h3>{{ number_format($totalNonaktif) }}</h3>
+                        </div>
+                        <div class="icon"><i class="bi bi-person-x"></i></div>
+                        <a href="{{ route('mahasiswa.index', array_filter(['status' => 'Nonaktif', 'tahun_akademik' => $tahunAkademik, 'semester' => $semester])) }}"
+                           class="small-box-footer">Lihat detail <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="small-box text-bg-warning h-100">
+                        <div class="inner">
+                            <p>Mahasiswa Cuti</p>
+                            <h3>{{ number_format($totalCuti) }}</h3>
+                        </div>
+                        <div class="icon"><i class="bi bi-calendar-minus"></i></div>
+                        <a href="{{ route('mahasiswa.index', array_filter(['status' => 'Cuti', 'tahun_akademik' => $tahunAkademik, 'semester' => $semester])) }}"
+                           class="small-box-footer">Lihat detail <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Grafik Batang Perbandingan per Fakultas --}}
+        @if($statsPerFakultas->count() > 0)
+        <div class="col-12">
+            <div class="card shadow-sm h-100">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Perbandingan Status per Fakultas</h3>
+                </div>
+                <div class="card-body">
+                    <div class="position-relative" style="height: {{ max(200, $statsPerFakultas->count() * 50) }}px">
+                        <canvas id="fakultasChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        {{-- Tabel Statistik per Fakultas --}}
+        <div class="col-12">
+            <div class="card shadow-sm h-100">
+                <div class="card-header border-0">
+                    <h3 class="card-title mb-0">Statistik per Fakultas</h3>
+                    <p class="card-subtitle text-body-secondary small mb-0">Klik nama fakultas untuk melihat detail per program studi</p>
                 </div>
 
                 @if($statsPerFakultas->count() > 0)
-                <div class="overflow-x-auto">
-                    <table class="min-w-full text-sm">
-                        <thead class="bg-emerald-700 text-white">
-                            <tr>
-                                <th class="px-5 py-3 text-left font-semibold">Fakultas</th>
-                                <th class="px-5 py-3 text-center font-semibold">Total</th>
-                                <th class="px-5 py-3 text-center font-semibold">Aktif</th>
-                                <th class="px-5 py-3 text-center font-semibold">Nonaktif</th>
-                                <th class="px-5 py-3 text-center font-semibold">Cuti</th>
-                                <th class="px-5 py-3 text-center font-semibold">% Aktif</th>
-                                <th class="px-5 py-3 text-center font-semibold">Detail</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            @foreach($statsPerFakultas as $f)
-                            @php $pct = $f->total > 0 ? round($f->aktif / $f->total * 100) : 0; @endphp
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="px-5 py-4 font-medium text-gray-800">{{ $f->fakultas }}</td>
-                                <td class="px-5 py-4 text-center font-bold text-gray-700">{{ $f->total }}</td>
-                                <td class="px-5 py-4 text-center">
-                                    <span class="px-2.5 py-0.5 bg-green-100 text-green-800 rounded-full font-semibold text-xs">{{ $f->aktif }}</span>
-                                </td>
-                                <td class="px-5 py-4 text-center">
-                                    <span class="px-2.5 py-0.5 bg-red-100 text-red-800 rounded-full font-semibold text-xs">{{ $f->nonaktif }}</span>
-                                </td>
-                                <td class="px-5 py-4 text-center">
-                                    <span class="px-2.5 py-0.5 bg-yellow-100 text-yellow-800 rounded-full font-semibold text-xs">{{ $f->cuti }}</span>
-                                </td>
-                                <td class="px-5 py-4 text-center">
-                                    <div class="flex items-center gap-2">
-                                        <div class="flex-1 bg-gray-100 rounded-full h-2">
-                                            <div class="bg-green-500 h-2 rounded-full" style="width: {{ $pct }}%"></div>
-                                        </div>
-                                        <span class="text-xs text-gray-600 w-9 text-right">{{ $pct }}%</span>
-                                    </div>
-                                </td>
-                                <td class="px-5 py-4 text-center">
-                                    <a href="{{ route('mahasiswa.laporan.fakultas', urlencode($f->fakultas)) }}?tahun_akademik={{ $tahunAkademik }}&semester={{ $semester }}"
-                                       class="inline-flex items-center gap-1 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-lg hover:bg-emerald-100 transition text-xs font-semibold">
-                                        Detail →
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Fakultas</th>
+                                    <th class="text-center">Total</th>
+                                    <th class="text-center">Aktif</th>
+                                    <th class="text-center">Nonaktif</th>
+                                    <th class="text-center">Cuti</th>
+                                    <th class="text-center">% Aktif</th>
+                                    <th class="text-center">Detail</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($statsPerFakultas as $f)
+                                    @php
+                                        $fTotal = $f->total ?: 0;
+                                        $fAktif = $f->aktif ?: 0;
+                                        $fNonaktif = $f->nonaktif ?: 0;
+                                        $fCuti = $f->cuti ?: 0;
+                                        $persenAktif = $fTotal > 0 ? round(($fAktif / $fTotal) * 100) : 0;
+                                    @endphp
+                                    <tr>
+                                        <td class="fw-semibold">{{ $f->fakultas }}</td>
+                                        <td class="text-center fw-semibold">{{ number_format($fTotal) }}</td>
+                                        <td class="text-center"><span class="badge text-bg-success">{{ $fAktif }}</span></td>
+                                        <td class="text-center"><span class="badge text-bg-danger">{{ $fNonaktif }}</span></td>
+                                        <td class="text-center"><span class="badge text-bg-warning">{{ $fCuti }}</span></td>
+                                        <td class="text-center">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="progress flex-grow-1" role="progressbar" aria-label="Tingkat keaktifan" aria-valuenow="{{ $persenAktif }}" aria-valuemin="0" aria-valuemax="100" style="height: 6px;">
+                                                    <div class="progress-bar bg-success" style="width: {{ $persenAktif }}%"></div>
+                                                </div>
+                                                <span class="small text-nowrap">{{ $persenAktif }}%</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{{ route('mahasiswa.laporan.fakultas', urlencode($f->fakultas)) }}?tahun_akademik={{ $tahunAkademik }}&semester={{ $semester }}"
+                                               class="btn btn-outline-success btn-sm d-flex align-items-center gap-1">
+                                                <i class="bi bi-arrow-right"></i> Detail
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 @else
-                <div class="p-16 text-center">
-                    <svg class="w-16 h-16 text-gray-200 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                    <p class="text-gray-400 text-sm">Belum ada data yang sesuai filter.</p>
-                </div>
+                    <div class="card-body text-center text-body-secondary py-5">
+                        <i class="bi bi-bar-chart-line fs-1 d-block mb-2"></i>
+                        Tidak ada data fakultas pada periode yang dipilih.
+                    </div>
                 @endif
             </div>
-
         </div>
     </div>
 
+    @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const data = @json($statsPerFakultas);
-        if (!data.length) return;
+        document.addEventListener('DOMContentLoaded', function () {
+            const fakultasCanvas = document.getElementById('fakultasChart');
+            if (!fakultasCanvas) return;
 
-        new Chart(document.getElementById('fakultasChart').getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: data.map(d => d.fakultas),
-                datasets: [
-                    {
-                        label: 'Aktif',
-                        data: data.map(d => d.aktif),
-                        backgroundColor: 'rgba(34,197,94,0.8)',
-                        borderRadius: 4,
-                    },
-                    {
-                        label: 'Nonaktif',
-                        data: data.map(d => d.nonaktif),
-                        backgroundColor: 'rgba(239,68,68,0.8)',
-                        borderRadius: 4,
-                    },
-                    {
-                        label: 'Cuti',
-                        data: data.map(d => d.cuti),
-                        backgroundColor: 'rgba(234,179,8,0.8)',
-                        borderRadius: 4,
-                    },
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                indexAxis: 'y',
-                scales: {
-                    x: { beginAtZero: true, stacked: false, ticks: { stepSize: 1 } },
-                    y: { ticks: { font: { size: 12 } } }
+            const fakultasData = @json($statsPerFakultas);
+            const labels = fakultasData.map(item => item.fakultas);
+            const aktif = fakultasData.map(item => item.aktif || 0);
+            const nonaktif = fakultasData.map(item => item.nonaktif || 0);
+            const cuti = fakultasData.map(item => item.cuti || 0);
+
+            new Chart(fakultasCanvas.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Aktif',
+                            data: aktif,
+                            backgroundColor: 'rgba(16, 185, 129, 0.85)',
+                            borderColor: '#059669',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Nonaktif',
+                            data: nonaktif,
+                            backgroundColor: 'rgba(239, 68, 68, 0.85)',
+                            borderColor: '#dc2626',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Cuti',
+                            data: cuti,
+                            backgroundColor: 'rgba(245, 158, 11, 0.85)',
+                            borderColor: '#d97706',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        }
+                    ]
                 },
-                plugins: {
-                    legend: { position: 'top' },
-                    datalabels: { display: false }
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: ${context.raw} mahasiswa`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            stacked: true,
+                            ticks: { stepSize: 1 }
+                        },
+                        y: { stacked: true }
+                    }
                 }
-            }
+            });
         });
-    });
     </script>
-</x-app-layout>
+    @endpush
+</x-adminlte-layout>

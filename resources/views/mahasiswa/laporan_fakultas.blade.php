@@ -1,199 +1,246 @@
-<x-app-layout>
+<x-adminlte-layout>
     <x-slot name="header">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div class="flex items-center gap-3">
-                <a href="{{ route('mahasiswa.laporan') }}" class="text-emerald-600 hover:text-emerald-800">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-lg-between gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <a href="{{ route('mahasiswa.laporan') }}" class="btn btn-outline-secondary btn-sm" title="Kembali ke laporan">
+                    <i class="bi bi-arrow-left"></i>
                 </a>
                 <div>
-                    <h2 class="font-semibold text-xl text-emerald-800 leading-tight">{{ $fakultas }}</h2>
-                    <p class="text-sm text-emerald-600">Laporan Detail Fakultas</p>
+                    <h1 class="h3 mb-0 fw-semibold">{{ $fakultas }}</h1>
+                    <p class="text-body-secondary small mb-0">Laporan Detail Fakultas</p>
                 </div>
             </div>
-            <div class="flex gap-2">
+            <div class="d-flex gap-2">
                 <a href="{{ route('mahasiswa.laporan.export', array_merge(request()->query(), ['format'=>'excel','fakultas'=>$fakultas])) }}"
-                   class="inline-flex items-center gap-1.5 px-3 py-2 bg-teal-600 text-white text-sm rounded-lg hover:bg-teal-700 transition font-medium">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-                    Excel
+                   class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
+                    <i class="bi bi-file-earmark-excel"></i> Excel
                 </a>
                 <a href="{{ route('mahasiswa.laporan.export', array_merge(request()->query(), ['format'=>'pdf','fakultas'=>$fakultas])) }}"
-                   class="inline-flex items-center gap-1.5 px-3 py-2 bg-rose-600 text-white text-sm rounded-lg hover:bg-rose-700 transition font-medium">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                    PDF
+                   class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1">
+                    <i class="bi bi-file-earmark-pdf"></i> PDF
                 </a>
             </div>
         </div>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show d-flex align-items-start gap-2" role="alert">
+            <i class="bi bi-check-circle-fill mt-1"></i>
+            <div>{{ session('success') }}</div>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Tutup"></button>
+        </div>
+    @endif
 
-            {{-- Filter --}}
-            <div class="bg-white rounded-2xl shadow-sm p-5">
-                <form method="GET" class="flex flex-wrap gap-3 items-end">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wider">Tahun Akademik</label>
-                        <select name="tahun_akademik" class="rounded-lg border-gray-300 text-sm focus:ring-emerald-400 focus:border-emerald-400 shadow-sm">
-                            <option value="">Semua</option>
-                            @foreach($tahunList as $ta)
-                                <option value="{{ $ta }}" {{ $tahunAkademik == $ta ? 'selected' : '' }}>{{ $ta }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wider">Semester</label>
-                        <select name="semester" class="rounded-lg border-gray-300 text-sm focus:ring-emerald-400 focus:border-emerald-400 shadow-sm">
-                            <option value="">Semua</option>
-                            @for($s=1; $s<=14; $s++)
-                                <option value="{{ $s }}" {{ $semester == $s ? 'selected' : '' }}>Semester {{ $s }}</option>
-                            @endfor
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wider">Filter Prodi</label>
-                        <select name="program_studi" class="rounded-lg border-gray-300 text-sm focus:ring-emerald-400 focus:border-emerald-400 shadow-sm">
-                            <option value="">Semua Prodi</option>
-                            @foreach($daftarProdi as $p)
-                                <option value="{{ $p }}" {{ $prodiFilter == $p ? 'selected' : '' }}>{{ $p }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <button type="submit" class="px-4 py-2 bg-emerald-600 text-white text-sm rounded-lg hover:bg-emerald-700 transition font-medium">Terapkan</button>
-                    <a href="{{ route('mahasiswa.laporan.fakultas', $fakultas) }}"
-                       class="px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded-lg hover:bg-gray-300 transition font-medium">Reset</a>
-                </form>
-            </div>
-
-            {{-- Kartu Statistik Fakultas --}}
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
-                @php $statCards = [
-                    ['label'=>'Total','value'=>$totalAll,      'color'=>'emerald'],
-                    ['label'=>'Aktif','value'=>$totalAktif,    'color'=>'green'],
-                    ['label'=>'Nonaktif','value'=>$totalNonaktif,'color'=>'red'],
-                    ['label'=>'Cuti','value'=>$totalCuti,      'color'=>'yellow'],
-                ]; @endphp
-                @foreach($statCards as $c)
-                <div class="bg-white rounded-2xl shadow-sm p-5 border-t-4 border-{{ $c['color'] }}-500">
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">{{ $c['label'] }}</p>
-                    <h3 class="text-3xl font-extrabold text-{{ $c['color'] }}-600">{{ $c['value'] }}</h3>
+    <div class="row g-3">
+        {{-- Filter --}}
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="GET" class="row g-3 align-items-end">
+                        <div class="col-12 col-md-3">
+                            <label class="form-label small fw-semibold text-uppercase">Tahun Akademik</label>
+                            <select name="tahun_akademik" class="form-select form-select-sm">
+                                <option value="">Semua</option>
+                                @foreach($tahunList as $ta)
+                                    <option value="{{ $ta }}" {{ $tahunAkademik == $ta ? 'selected' : '' }}>{{ $ta }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <label class="form-label small fw-semibold text-uppercase">Semester</label>
+                            <select name="semester" class="form-select form-select-sm">
+                                <option value="">Semua</option>
+                                @for($s=1; $s<=14; $s++)
+                                    <option value="{{ $s }}" {{ $semester == $s ? 'selected' : '' }}>Semester {{ $s }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-semibold text-uppercase">Filter Prodi</label>
+                            <select name="program_studi" class="form-select form-select-sm">
+                                <option value="">Semua Prodi</option>
+                                @foreach($daftarProdi as $p)
+                                    <option value="{{ $p }}" {{ $prodiFilter == $p ? 'selected' : '' }}>{{ $p }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-2 d-flex gap-2">
+                            <button type="submit" class="btn btn-success btn-sm w-100 d-flex align-items-center justify-content-center gap-1">
+                                <i class="bi bi-funnel"></i> Terapkan
+                            </button>
+                            <a href="{{ route('mahasiswa.laporan.fakultas', $fakultas) }}"
+                               class="btn btn-outline-secondary btn-sm" title="Reset filter">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                            </a>
+                        </div>
+                    </form>
                 </div>
-                @endforeach
             </div>
+        </div>
 
-            {{-- Statistik per Program Studi --}}
-            @if($statsPerProdi->count() > 0)
-            <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                    <h3 class="font-semibold text-gray-700">Statistik per Program Studi</h3>
-                    <span class="text-xs text-gray-400">{{ $statsPerProdi->count() }} program studi</span>
+        {{-- Kartu Statistik Fakultas --}}
+        <div class="col-12">
+            <div class="row g-3">
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="small-box text-bg-success h-100">
+                        <div class="inner">
+                            <p>Total Mahasiswa</p>
+                            <h3>{{ number_format($totalAll) }}</h3>
+                        </div>
+                        <div class="icon"><i class="bi bi-people"></i></div>
+                        <div class="small-box-footer">&nbsp;</div>
+                    </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full text-sm">
-                        <thead class="bg-gray-50">
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="small-box text-bg-primary h-100">
+                        <div class="inner">
+                            <p>Mahasiswa Aktif</p>
+                            <h3>{{ number_format($totalAktif) }}</h3>
+                        </div>
+                        <div class="icon"><i class="bi bi-person-check"></i></div>
+                        <div class="small-box-footer">&nbsp;</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="small-box text-bg-danger h-100">
+                        <div class="inner">
+                            <p>Mahasiswa Nonaktif</p>
+                            <h3>{{ number_format($totalNonaktif) }}</h3>
+                        </div>
+                        <div class="icon"><i class="bi bi-person-x"></i></div>
+                        <div class="small-box-footer">&nbsp;</div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="small-box text-bg-warning h-100">
+                        <div class="inner">
+                            <p>Mahasiswa Cuti</p>
+                            <h3>{{ number_format($totalCuti) }}</h3>
+                        </div>
+                        <div class="icon"><i class="bi bi-calendar-minus"></i></div>
+                        <div class="small-box-footer">&nbsp;</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Statistik per Program Studi --}}
+        @if($statsPerProdi->count() > 0)
+        <div class="col-12">
+            <div class="card shadow-sm h-100">
+                <div class="card-header border-0 d-flex align-items-center justify-content-between">
+                    <h3 class="card-title mb-0">Statistik per Program Studi</h3>
+                    <span class="text-body-secondary small">{{ $statsPerProdi->count() }} program studi</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped table-hover align-middle mb-0">
+                        <thead class="table-light">
                             <tr>
-                                <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Program Studi</th>
-                                <th class="px-5 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Total</th>
-                                <th class="px-5 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Aktif</th>
-                                <th class="px-5 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Nonaktif</th>
-                                <th class="px-5 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Cuti</th>
-                                <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Distribusi</th>
+                                <th>Program Studi</th>
+                                <th class="text-center">Total</th>
+                                <th class="text-center">Aktif</th>
+                                <th class="text-center">Nonaktif</th>
+                                <th class="text-center">Cuti</th>
+                                <th>Distribusi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100">
+                        <tbody>
                             @foreach($statsPerProdi as $p)
-                            @php
-                                $pTotal = $p->total ?: 1;
-                                $wA = round($p->aktif / $pTotal * 100);
-                                $wN = round($p->nonaktif / $pTotal * 100);
-                                $wC = round($p->cuti / $pTotal * 100);
-                            @endphp
-                            <tr class="hover:bg-gray-50 transition cursor-pointer"
-                                onclick="window.location='{{ route('mahasiswa.laporan.fakultas', urlencode($fakultas)) }}?program_studi={{ urlencode($p->program_studi) }}&tahun_akademik={{ $tahunAkademik }}&semester={{ $semester }}'">
-                                <td class="px-5 py-3 font-medium text-emerald-700 hover:underline">{{ $p->program_studi }}</td>
-                                <td class="px-5 py-3 text-center font-bold text-gray-700">{{ $p->total }}</td>
-                                <td class="px-5 py-3 text-center">
-                                    <span class="px-2 py-0.5 bg-green-100 text-green-800 rounded-full text-xs font-semibold">{{ $p->aktif }}</span>
-                                </td>
-                                <td class="px-5 py-3 text-center">
-                                    <span class="px-2 py-0.5 bg-red-100 text-red-800 rounded-full text-xs font-semibold">{{ $p->nonaktif }}</span>
-                                </td>
-                                <td class="px-5 py-3 text-center">
-                                    <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded-full text-xs font-semibold">{{ $p->cuti }}</span>
-                                </td>
-                                <td class="px-5 py-3">
-                                    <div class="flex h-3 rounded-full overflow-hidden w-32 bg-gray-100">
-                                        @if($wA > 0)<div class="bg-green-500" style="width:{{ $wA }}%"></div>@endif
-                                        @if($wN > 0)<div class="bg-red-400"   style="width:{{ $wN }}%"></div>@endif
-                                        @if($wC > 0)<div class="bg-yellow-400" style="width:{{ $wC }}%"></div>@endif
-                                    </div>
-                                </td>
-                            </tr>
+                                @php
+                                    $pTotal = $p->total ?: 1;
+                                    $wA = round($p->aktif / $pTotal * 100);
+                                    $wN = round($p->nonaktif / $pTotal * 100);
+                                    $wC = round($p->cuti / $pTotal * 100);
+                                @endphp
+                                <tr>
+                                    <td>
+                                        <a href="{{ route('mahasiswa.laporan.fakultas', urlencode($fakultas)) }}?program_studi={{ urlencode($p->program_studi) }}&tahun_akademik={{ $tahunAkademik }}&semester={{ $semester }}"
+                                           class="fw-semibold text-success text-decoration-none">
+                                            {{ $p->program_studi }}
+                                        </a>
+                                    </td>
+                                    <td class="text-center fw-bold">{{ $p->total }}</td>
+                                    <td class="text-center"><span class="badge text-bg-success">{{ $p->aktif }}</span></td>
+                                    <td class="text-center"><span class="badge text-bg-danger">{{ $p->nonaktif }}</span></td>
+                                    <td class="text-center"><span class="badge text-bg-warning">{{ $p->cuti }}</span></td>
+                                    <td>
+                                        <div class="progress" style="height: 8px; min-width: 120px;" role="progressbar">
+                                            @if($wA > 0)<div class="progress-bar bg-success" style="width:{{ $wA }}%" title="Aktif: {{ $wA }}%"></div>@endif
+                                            @if($wN > 0)<div class="progress-bar bg-danger" style="width:{{ $wN }}%" title="Nonaktif: {{ $wN }}%"></div>@endif
+                                            @if($wC > 0)<div class="progress-bar bg-warning" style="width:{{ $wC }}%" title="Cuti: {{ $wC }}%"></div>@endif
+                                        </div>
+                                    </td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
-            @endif
+        </div>
+        @endif
 
-            {{-- Daftar Mahasiswa --}}
-            <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                    <h3 class="font-semibold text-gray-700">
-                        Daftar Mahasiswa{{ $prodiFilter ? ' — ' . $prodiFilter : '' }}
-                    </h3>
-                    <span class="text-sm text-gray-400">{{ $mahasiswas->total() }} mahasiswa</span>
+        {{-- Daftar Mahasiswa --}}
+        <div class="col-12">
+            <div class="card shadow-sm h-100">
+                <div class="card-header border-0 d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="card-title mb-0">Daftar Mahasiswa{{ $prodiFilter ? ' — ' . $prodiFilter : '' }}</h3>
+                        <p class="card-subtitle text-body-secondary small mb-0">Rincian data mahasiswa terdaftar</p>
+                    </div>
+                    <span class="badge text-bg-light border">{{ $mahasiswas->total() }} mahasiswa</span>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full text-sm">
-                        <thead class="bg-emerald-700 text-white">
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped table-hover align-middle mb-0">
+                        <thead class="table-light">
                             <tr>
-                                <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">NIM</th>
-                                <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Nama</th>
-                                <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Program Studi</th>
-                                <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Jenjang</th>
-                                <th class="px-4 py-3 text-center font-semibold text-xs uppercase tracking-wider">Semester</th>
-                                <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Status</th>
-                                <th class="px-4 py-3 text-center font-semibold text-xs uppercase tracking-wider">Aksi</th>
+                                <th>NIM</th>
+                                <th>Nama</th>
+                                <th>Program Studi</th>
+                                <th>Jenjang</th>
+                                <th class="text-center">Semester</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100">
+                        <tbody>
                             @forelse($mahasiswas as $mhs)
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="px-4 py-3 font-mono text-gray-700 whitespace-nowrap">{{ $mhs->nim }}</td>
-                                <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">{{ $mhs->nama }}</td>
-                                <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ $mhs->program_studi ?? '-' }}</td>
-                                <td class="px-4 py-3 whitespace-nowrap">
-                                    <span class="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-xs font-medium">{{ $mhs->jenjang }}</span>
-                                </td>
-                                <td class="px-4 py-3 text-center text-gray-600 whitespace-nowrap">{{ $mhs->semester ?? '-' }}</td>
-                                <td class="px-4 py-3 whitespace-nowrap">
-                                    @if($mhs->status == 'Aktif')
-                                        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">Aktif</span>
-                                    @elseif($mhs->status == 'Cuti')
-                                        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">Cuti</span>
-                                    @else
-                                        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">Nonaktif</span>
-                                    @endif
-                                </td>
-                                <td class="px-4 py-3 text-center whitespace-nowrap">
-                                    <a href="{{ route('mahasiswa.show', $mhs->id) }}" class="text-emerald-600 hover:text-emerald-900 text-xs font-medium">Detail</a>
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td class="font-monospace">{{ $mhs->nim }}</td>
+                                    <td class="fw-medium">{{ $mhs->nama }}</td>
+                                    <td>{{ $mhs->program_studi ?? '-' }}</td>
+                                    <td><span class="badge text-bg-light border">{{ $mhs->jenjang }}</span></td>
+                                    <td class="text-center">{{ $mhs->semester ?? '-' }}</td>
+                                    <td class="text-center">
+                                        @if($mhs->status == 'Aktif')
+                                            <span class="badge text-bg-success">Aktif</span>
+                                        @elseif($mhs->status == 'Cuti')
+                                            <span class="badge text-bg-warning">Cuti</span>
+                                        @else
+                                            <span class="badge text-bg-danger">Nonaktif</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{{ route('mahasiswa.show', $mhs->id) }}" class="btn btn-outline-success btn-sm">
+                                            Detail
+                                        </a>
+                                    </td>
+                                </tr>
                             @empty
-                            <tr>
-                                <td colspan="7" class="px-6 py-12 text-center text-gray-400 text-sm">Tidak ada data mahasiswa yang sesuai.</td>
-                            </tr>
+                                <tr>
+                                    <td colspan="7" class="py-5 text-center text-body-secondary">
+                                        Tidak ada data mahasiswa yang sesuai.
+                                    </td>
+                                </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
                 @if($mahasiswas->hasPages())
-                <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                    {{ $mahasiswas->links() }}
-                </div>
+                    <div class="card-footer bg-white border-top">
+                        {{ $mahasiswas->links() }}
+                    </div>
                 @endif
             </div>
-
         </div>
     </div>
-</x-app-layout>
+</x-adminlte-layout>

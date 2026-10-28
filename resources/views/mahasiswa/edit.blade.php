@@ -1,173 +1,219 @@
-<x-app-layout>
+<x-adminlte-layout>
     <x-slot name="header">
-        <div class="flex items-center gap-3">
-            <a href="{{ route('mahasiswa.index') }}" class="text-emerald-600 hover:text-emerald-800">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        <div class="d-flex align-items-center gap-2">
+            <a href="{{ route('mahasiswa.index') }}" class="btn btn-outline-secondary btn-sm" title="Kembali">
+                <i class="bi bi-arrow-left"></i>
             </a>
-            <h2 class="font-semibold text-xl text-emerald-800 leading-tight">Edit Data Mahasiswa</h2>
+            <div>
+                <h1 class="h3 mb-0">Edit Data Mahasiswa</h1>
+                <small class="text-body-secondary">Perbarui informasi mahasiswa pada pangkalan data</small>
+            </div>
         </div>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-                <div class="bg-emerald-700 px-6 py-4">
-                    <h3 class="text-white font-semibold text-base">Edit: {{ $mahasiswa->nama }}</h3>
-                    <p class="text-emerald-200 text-sm mt-0.5">NIM: {{ $mahasiswa->nim }}</p>
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-9">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-success text-white py-3">
+                    <h5 class="card-title mb-0 fw-semibold">
+                        <i class="bi bi-pencil-square me-2"></i>Edit: {{ $mahasiswa->nama }}
+                    </h5>
+                    <small class="text-white-50">NIM: {{ $mahasiswa->nim }} &bull; Periksa kembali kelengkapan field wajib (*)</small>
                 </div>
-                <div class="p-6 sm:p-8">
+                <div class="card-body p-4">
 
                     @if ($errors->any())
-                        <div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
-                            <p class="text-sm font-semibold text-red-700 mb-2">Terdapat kesalahan input:</p>
-                            <ul class="list-disc list-inside text-sm text-red-600 space-y-1">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <i class="bi bi-exclamation-octagon-fill fs-5"></i>
+                                <strong class="fs-6">Terdapat kesalahan pengisian data:</strong>
+                            </div>
+                            <ul class="mb-0 ps-3 small">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('mahasiswa.update', $mahasiswa->id) }}" class="space-y-6">
+                    <form method="POST" action="{{ route('mahasiswa.update', $mahasiswa->id) }}" novalidate>
                         @csrf
                         @method('PUT')
 
                         {{-- SEKSI 1: Identitas Dasar --}}
-                        <div class="border-b border-gray-100 pb-6">
-                            <h4 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4 flex items-center gap-2">
-                                <span class="w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                        <div class="mb-4 pb-3 border-bottom">
+                            <h6 class="fw-bold text-success text-uppercase mb-3 d-flex align-items-center gap-2">
+                                <span class="badge text-bg-success rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px;">1</span>
                                 Identitas Dasar
-                            </h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                <div>
-                                    <label for="nim" class="block text-sm font-medium text-gray-700 mb-1">NIM <span class="text-red-500">*</span></label>
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <label for="nim" class="form-label small fw-semibold">NIM <span class="text-danger">*</span></label>
                                     <input id="nim" type="text" name="nim" value="{{ old('nim', $mahasiswa->nim) }}" required
-                                           class="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-400 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 text-sm"/>
+                                           class="form-control form-control-sm @error('nim') is-invalid @enderror"/>
+                                    @error('nim')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                <div>
-                                    <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
+                                <div class="col-12 col-md-6">
+                                    <label for="nama" class="form-label small fw-semibold">Nama Lengkap <span class="text-danger">*</span></label>
                                     <input id="nama" type="text" name="nama" value="{{ old('nama', $mahasiswa->nama) }}" required
-                                           class="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-400 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 text-sm"/>
+                                           class="form-control form-control-sm @error('nama') is-invalid @enderror"/>
+                                    @error('nama')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                <div>
-                                    <label for="jenis_kelamin" class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin <span class="text-red-500">*</span></label>
+                                <div class="col-12 col-md-6">
+                                    <label for="jenis_kelamin" class="form-label small fw-semibold">Jenis Kelamin <span class="text-danger">*</span></label>
                                     <select id="jenis_kelamin" name="jenis_kelamin" required
-                                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-400 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 text-sm">
+                                            class="form-select form-select-sm @error('jenis_kelamin') is-invalid @enderror">
                                         <option value="">Pilih Jenis Kelamin</option>
                                         <option value="L" {{ old('jenis_kelamin', $mahasiswa->jenis_kelamin) == 'L' ? 'selected' : '' }}>Laki-laki</option>
                                         <option value="P" {{ old('jenis_kelamin', $mahasiswa->jenis_kelamin) == 'P' ? 'selected' : '' }}>Perempuan</option>
                                     </select>
+                                    @error('jenis_kelamin')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                <div>
-                                    <label for="no_hp" class="block text-sm font-medium text-gray-700 mb-1">No HP</label>
+                                <div class="col-12 col-md-6">
+                                    <label for="no_hp" class="form-label small fw-semibold">No HP</label>
                                     <input id="no_hp" type="text" name="no_hp" value="{{ old('no_hp', $mahasiswa->no_hp) }}"
-                                           class="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-400 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 text-sm"/>
+                                           class="form-control form-control-sm @error('no_hp') is-invalid @enderror"/>
+                                    @error('no_hp')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                <div class="sm:col-span-2">
-                                    <label for="alamat" class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
+                                <div class="col-12">
+                                    <label for="alamat" class="form-label small fw-semibold">Alamat</label>
                                     <textarea id="alamat" name="alamat" rows="2"
-                                              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-400 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 text-sm">{{ old('alamat', $mahasiswa->alamat) }}</textarea>
+                                              class="form-control form-control-sm @error('alamat') is-invalid @enderror">{{ old('alamat', $mahasiswa->alamat) }}</textarea>
+                                    @error('alamat')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
 
                         {{-- SEKSI 2: Akademik --}}
-                        <div class="border-b border-gray-100 pb-6">
-                            <h4 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4 flex items-center gap-2">
-                                <span class="w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                        <div class="mb-4 pb-3 border-bottom">
+                            <h6 class="fw-bold text-success text-uppercase mb-3 d-flex align-items-center gap-2">
+                                <span class="badge text-bg-success rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px;">2</span>
                                 Informasi Akademik
-                            </h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                <div>
-                                    <label for="fakultas" class="block text-sm font-medium text-gray-700 mb-1">Fakultas <span class="text-red-500">*</span></label>
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <label for="fakultas" class="form-label small fw-semibold">Fakultas <span class="text-danger">*</span></label>
                                     <select id="fakultas" name="fakultas" required
-                                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-400 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 text-sm"
+                                            class="form-select form-select-sm @error('fakultas') is-invalid @enderror"
                                             onchange="updateProdi(this.value)">
                                         <option value="">Pilih Fakultas</option>
                                         @foreach($daftarFakultas as $fak => $prodis)
                                             <option value="{{ $fak }}" {{ old('fakultas', $mahasiswa->fakultas) == $fak ? 'selected' : '' }}>{{ $fak }}</option>
                                         @endforeach
                                     </select>
+                                    @error('fakultas')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                <div>
-                                    <label for="program_studi" class="block text-sm font-medium text-gray-700 mb-1">Program Studi <span class="text-red-500">*</span></label>
+                                <div class="col-12 col-md-6">
+                                    <label for="program_studi" class="form-label small fw-semibold">Program Studi <span class="text-danger">*</span></label>
                                     <select id="program_studi" name="program_studi" required
-                                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-400 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 text-sm">
+                                            class="form-select form-select-sm @error('program_studi') is-invalid @enderror">
                                         <option value="">Pilih Prodi</option>
                                     </select>
+                                    @error('program_studi')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                <div>
-                                    <label for="jenjang" class="block text-sm font-medium text-gray-700 mb-1">Jenjang <span class="text-red-500">*</span></label>
+                                <div class="col-12 col-md-6">
+                                    <label for="jenjang" class="form-label small fw-semibold">Jenjang <span class="text-danger">*</span></label>
                                     <select id="jenjang" name="jenjang" required
-                                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-400 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 text-sm">
+                                            class="form-select form-select-sm @error('jenjang') is-invalid @enderror">
                                         @foreach(['D3','S1','S2','S3'] as $j)
                                             <option value="{{ $j }}" {{ old('jenjang', $mahasiswa->jenjang) == $j ? 'selected' : '' }}>{{ $j }}</option>
                                         @endforeach
                                     </select>
+                                    @error('jenjang')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                <div>
-                                    <label for="jenis_kelas" class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelas <span class="text-red-500">*</span></label>
+                                <div class="col-12 col-md-6">
+                                    <label for="jenis_kelas" class="form-label small fw-semibold">Jenis Kelas <span class="text-danger">*</span></label>
                                     <select id="jenis_kelas" name="jenis_kelas" required
-                                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-400 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 text-sm">
+                                            class="form-select form-select-sm @error('jenis_kelas') is-invalid @enderror">
                                         <option value="Reguler"  {{ old('jenis_kelas', $mahasiswa->jenis_kelas) == 'Reguler'  ? 'selected' : '' }}>Reguler</option>
                                         <option value="Ekstensi" {{ old('jenis_kelas', $mahasiswa->jenis_kelas) == 'Ekstensi' ? 'selected' : '' }}>Ekstensi</option>
                                     </select>
+                                    @error('jenis_kelas')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                <div>
-                                    <label for="semester" class="block text-sm font-medium text-gray-700 mb-1">Semester <span class="text-red-500">*</span></label>
+                                <div class="col-12 col-md-6">
+                                    <label for="semester" class="form-label small fw-semibold">Semester <span class="text-danger">*</span></label>
                                     <select id="semester" name="semester" required
-                                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-400 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 text-sm">
+                                            class="form-select form-select-sm @error('semester') is-invalid @enderror">
                                         <option value="">Pilih Semester</option>
                                         @for($s = 1; $s <= 14; $s++)
                                             <option value="{{ $s }}" {{ old('semester', $mahasiswa->semester) == $s ? 'selected' : '' }}>Semester {{ $s }}</option>
                                         @endfor
                                     </select>
+                                    @error('semester')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                <div>
-                                    <label for="tahun_akademik" class="block text-sm font-medium text-gray-700 mb-1">Tahun Akademik <span class="text-red-500">*</span></label>
+                                <div class="col-12 col-md-6">
+                                    <label for="tahun_akademik" class="form-label small fw-semibold">Tahun Akademik <span class="text-danger">*</span></label>
                                     <input id="tahun_akademik" type="text" name="tahun_akademik"
                                            value="{{ old('tahun_akademik', $mahasiswa->tahun_akademik) }}"
                                            placeholder="contoh: 2025/2026" required
-                                           class="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-400 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 text-sm"/>
+                                           class="form-control form-control-sm @error('tahun_akademik') is-invalid @enderror"/>
+                                    @error('tahun_akademik')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
 
                         {{-- SEKSI 3: Status --}}
-                        <div>
-                            <h4 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4 flex items-center gap-2">
-                                <span class="w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold">3</span>
-                                Status
-                            </h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                <div>
-                                    <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status Mahasiswa <span class="text-red-500">*</span></label>
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-success text-uppercase mb-3 d-flex align-items-center gap-2">
+                                <span class="badge text-bg-success rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px;">3</span>
+                                Status Mahasiswa
+                            </h6>
+                            <div class="row g-3 align-items-center">
+                                <div class="col-12 col-md-6">
+                                    <label for="status" class="form-label small fw-semibold">Status Keaktifan <span class="text-danger">*</span></label>
                                     <select id="status" name="status" required
-                                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-400 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 text-sm">
+                                            class="form-select form-select-sm @error('status') is-invalid @enderror">
                                         <option value="Aktif"    {{ old('status', $mahasiswa->status) == 'Aktif'    ? 'selected' : '' }}>Aktif</option>
                                         <option value="Nonaktif" {{ old('status', $mahasiswa->status) == 'Nonaktif' ? 'selected' : '' }}>Nonaktif</option>
                                         <option value="Cuti"     {{ old('status', $mahasiswa->status) == 'Cuti'     ? 'selected' : '' }}>Cuti</option>
                                     </select>
+                                    @error('status')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                <div class="flex items-center mt-5">
-                                    <label class="inline-flex items-center cursor-pointer">
+                                <div class="col-12 col-md-6">
+                                    <div class="form-check mt-md-4 pt-md-2">
                                         <input id="status_beasiswa" type="checkbox" name="status_beasiswa" value="1"
-                                               class="rounded border-gray-300 text-emerald-600 shadow-sm focus:ring-emerald-400"
+                                               class="form-check-input"
                                                {{ old('status_beasiswa', $mahasiswa->status_beasiswa) ? 'checked' : '' }}>
-                                        <span class="ml-2 text-sm text-gray-700">Penerima Beasiswa</span>
-                                    </label>
+                                        <label for="status_beasiswa" class="form-check-label small fw-semibold">
+                                            Penerima Beasiswa
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="flex items-center justify-end gap-3 pt-2">
-                            <a href="{{ route('mahasiswa.show', $mahasiswa->id) }}"
-                               class="px-5 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition">
+                        {{-- Tombol Aksi --}}
+                        <div class="d-flex align-items-center justify-content-end gap-2 pt-3 border-top">
+                            <a href="{{ route('mahasiswa.show', $mahasiswa->id) }}" class="btn btn-outline-secondary btn-sm px-4">
                                 Batal
                             </a>
-                            <button type="submit"
-                                    class="px-6 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 transition shadow-sm">
-                                Simpan Perubahan
+                            <button type="submit" class="btn btn-success btn-sm px-4">
+                                <i class="bi bi-save me-1"></i> Simpan Perubahan
                             </button>
                         </div>
                     </form>
@@ -210,4 +256,4 @@
     }
     initProdi();
     </script>
-</x-app-layout>
+</x-adminlte-layout>

@@ -1,52 +1,56 @@
-<x-app-layout>
+<x-adminlte-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <a href="{{ route('mahasiswa.index') }}" class="text-emerald-600 hover:text-emerald-800">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <a href="{{ route('mahasiswa.index') }}" class="btn btn-outline-secondary btn-sm" title="Kembali">
+                    <i class="bi bi-arrow-left"></i>
                 </a>
-                <h2 class="font-semibold text-xl text-emerald-800 leading-tight">Detail Mahasiswa</h2>
+                <h1 class="h3 mb-0">Detail Mahasiswa</h1>
             </div>
             @if(Auth::user()->isAdmin())
             <a href="{{ route('mahasiswa.edit', $mahasiswa->id) }}"
-               class="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 text-white text-sm rounded-lg hover:bg-emerald-700 transition font-medium shadow-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                Edit
+               class="btn btn-success btn-sm">
+                <i class="bi bi-pencil me-1"></i> Edit Data
             </a>
             @endif
         </div>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-9">
 
             {{-- Kartu Identitas --}}
-            <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div class="card shadow-sm border-0 mb-4 overflow-hidden">
                 {{-- Header kartu --}}
-                <div class="bg-gradient-to-r from-emerald-700 to-emerald-600 px-6 py-6 flex items-center gap-5">
-                    <div class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-white text-2xl font-bold">
-                        {{ mb_strtoupper(mb_substr($mahasiswa->nama, 0, 1)) }}
-                    </div>
-                    <div>
-                        <h3 class="text-white text-xl font-bold">{{ $mahasiswa->nama }}</h3>
-                        <p class="text-emerald-200 text-sm font-mono mt-0.5">{{ $mahasiswa->nim }}</p>
-                        <div class="mt-2">
-                            @if($mahasiswa->status == 'Aktif')
-                                <span class="px-3 py-0.5 rounded-full text-xs font-bold bg-green-400 text-white">✓ Aktif</span>
-                            @elseif($mahasiswa->status == 'Cuti')
-                                <span class="px-3 py-0.5 rounded-full text-xs font-bold bg-yellow-400 text-white">⏸ Cuti</span>
-                            @else
-                                <span class="px-3 py-0.5 rounded-full text-xs font-bold bg-red-400 text-white">✕ Nonaktif</span>
-                            @endif
-                            @if($mahasiswa->status_beasiswa)
-                                <span class="ml-2 px-3 py-0.5 rounded-full text-xs font-bold bg-white/20 text-white">🎓 Beasiswa</span>
-                            @endif
+                <div class="card-header bg-success text-white p-4">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-white bg-opacity-25 text-white d-flex align-items-center justify-content-center fw-bold fs-3"
+                             style="width: 64px; height: 64px; min-width: 64px;">
+                            {{ mb_strtoupper(mb_substr($mahasiswa->nama, 0, 1)) }}
+                        </div>
+                        <div>
+                            <h4 class="card-title text-white mb-1 fw-bold">{{ $mahasiswa->nama }}</h4>
+                            <p class="mb-2 text-white-50 font-monospace small">NIM: {{ $mahasiswa->nim }}</p>
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                @if($mahasiswa->status == 'Aktif')
+                                    <span class="badge text-bg-success"><i class="bi bi-check-circle me-1"></i>Aktif</span>
+                                @elseif($mahasiswa->status == 'Cuti')
+                                    <span class="badge text-bg-warning"><i class="bi bi-pause-circle me-1"></i>Cuti</span>
+                                @else
+                                    <span class="badge text-bg-danger"><i class="bi bi-x-circle me-1"></i>Nonaktif</span>
+                                @endif
+                                @if($mahasiswa->status_beasiswa)
+                                    <span class="badge bg-white bg-opacity-25 text-white border border-white border-opacity-50">
+                                        <i class="bi bi-mortarboard me-1"></i>Penerima Beasiswa
+                                    </span>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {{-- Informasi detail --}}
-                <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
+                <div class="card-body p-4">
                     @php
                         $fields = [
                             ['label' => 'Jenis Kelamin',    'value' => $mahasiswa->jenis_kelamin_label],
@@ -60,19 +64,25 @@
                         ];
                     @endphp
 
-                    @foreach($fields as $f)
-                    <div class="border-b border-gray-100 pb-4">
-                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">{{ $f['label'] }}</p>
-                        <p class="text-sm font-medium text-gray-800">{{ $f['value'] }}</p>
-                    </div>
-                    @endforeach
+                    <div class="row g-4 mb-3">
+                        @foreach($fields as $f)
+                        <div class="col-12 col-sm-6">
+                            <div class="pb-2 border-bottom">
+                                <span class="d-block small text-body-secondary text-uppercase fw-semibold mb-1">{{ $f['label'] }}</span>
+                                <span class="fw-medium text-body">{{ $f['value'] }}</span>
+                            </div>
+                        </div>
+                        @endforeach
 
-                    <div class="sm:col-span-2 border-b border-gray-100 pb-4">
-                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Alamat</p>
-                        <p class="text-sm text-gray-800">{{ $mahasiswa->alamat ?? '-' }}</p>
+                        <div class="col-12">
+                            <div class="pb-2 border-bottom">
+                                <span class="d-block small text-body-secondary text-uppercase fw-semibold mb-1">Alamat</span>
+                                <span class="text-body">{{ $mahasiswa->alamat ?? '-' }}</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="sm:col-span-2 text-xs text-gray-400">
+                    <div class="small text-body-secondary mt-3">
                         Ditambahkan: {{ $mahasiswa->created_at ? $mahasiswa->created_at->format('d M Y H:i') : '-' }} &bull;
                         Diperbarui: {{ $mahasiswa->updated_at ? $mahasiswa->updated_at->format('d M Y H:i') : '-' }}
                     </div>
@@ -81,50 +91,55 @@
 
             {{-- Riwayat Status --}}
             @if($riwayat->count() > 0)
-            <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-100">
-                    <h3 class="font-semibold text-gray-700">Riwayat Status per Semester</h3>
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-body-tertiary py-3 border-bottom">
+                    <h5 class="card-title mb-0 fw-semibold">
+                        <i class="bi bi-clock-history me-2"></i>Riwayat Status per Semester
+                    </h5>
                 </div>
-                <div class="p-6">
-                    <div class="space-y-3">
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
                         @foreach($riwayat as $r)
-                        <div class="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
-                            <div class="flex items-center gap-4">
-                                <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center">
-                                    <span class="text-xs font-bold text-emerald-700">{{ $r->semester }}</span>
+                        <li class="list-group-item d-flex align-items-center justify-content-between py-3 px-4">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-circle bg-success-subtle text-success d-flex align-items-center justify-content-center fw-bold fs-6"
+                                     style="width: 38px; height: 38px; min-width: 38px;">
+                                    {{ $r->semester }}
                                 </div>
                                 <div>
-                                    <p class="text-sm font-medium text-gray-800">Semester {{ $r->semester }}</p>
-                                    <p class="text-xs text-gray-400">{{ $r->tahun_akademik }}</p>
+                                    <div class="fw-semibold text-body">Semester {{ $r->semester }}</div>
+                                    <small class="text-body-secondary">Tahun Akademik {{ $r->tahun_akademik }}</small>
                                 </div>
                             </div>
-                            @if($r->status == 'Aktif')
-                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">Aktif</span>
-                            @elseif($r->status == 'Cuti')
-                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">Cuti</span>
-                            @else
-                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">Nonaktif</span>
-                            @endif
-                        </div>
+                            <div>
+                                @if($r->status == 'Aktif')
+                                    <span class="badge text-bg-success">Aktif</span>
+                                @elseif($r->status == 'Cuti')
+                                    <span class="badge text-bg-warning">Cuti</span>
+                                @else
+                                    <span class="badge text-bg-danger">Nonaktif</span>
+                                @endif
+                            </div>
+                        </li>
                         @endforeach
-                    </div>
+                    </ul>
                 </div>
             </div>
             @endif
 
             {{-- Tombol aksi --}}
             @if(Auth::user()->isAdmin())
-            <div class="flex justify-end gap-3">
+            <div class="d-flex justify-content-end gap-2 mb-4">
                 <a href="{{ route('mahasiswa.edit', $mahasiswa->id) }}"
-                   class="px-5 py-2 text-sm font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 transition shadow-sm">
-                    Edit Data
+                   class="btn btn-success btn-sm px-3">
+                    <i class="bi bi-pencil me-1"></i> Edit Data
                 </a>
                 <form action="{{ route('mahasiswa.destroy', $mahasiswa->id) }}" method="POST"
                       onsubmit="return confirm('Hapus data {{ addslashes($mahasiswa->nama) }}? Tindakan ini tidak bisa dibatalkan.')">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="px-5 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition shadow-sm">
-                        Hapus Data
+                    <button type="submit" class="btn btn-outline-danger btn-sm px-3">
+                        <i class="bi bi-trash me-1"></i> Hapus Data
                     </button>
                 </form>
             </div>
@@ -132,4 +147,4 @@
 
         </div>
     </div>
-</x-app-layout>
+</x-adminlte-layout>
