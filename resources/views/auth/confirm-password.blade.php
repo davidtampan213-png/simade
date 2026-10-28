@@ -1,27 +1,30 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
+@extends('layouts.guest-adminlte')
+@section('content')
+    <h2 class="auth-card-title mb-1">Konfirmasi Akses</h2>
+    <p class="auth-card-subtitle mb-4">
         {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
-    </div>
+    </p>
 
-    <form method="POST" action="{{ route('password.confirm') }}">
+    <form method="POST" action="{{ route('password.confirm') }}" novalidate>
         @csrf
 
-        <!-- Password -->
-        <div>
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div class="mb-4">
+            <label for="password" class="form-label">Password</label>
+            <input
+                id="password"
+                type="password"
+                name="password"
+                required
+                autocomplete="current-password"
+                class="form-control @error('password') is-invalid @enderror"
+            >
+            @error('password')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror
         </div>
 
-        <div class="flex justify-end mt-4">
-            <x-primary-button>
-                {{ __('Confirm') }}
-            </x-primary-button>
-        </div>
+        <button type="submit" class="btn btn-primary w-100 py-2">
+            {{ __('Confirm') }}
+        </button>
     </form>
-</x-guest-layout>
+@endsection
