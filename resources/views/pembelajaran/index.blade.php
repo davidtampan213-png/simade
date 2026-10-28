@@ -1,72 +1,71 @@
-<x-app-layout>
+<x-adminlte-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-emerald-800 leading-tight">
-            📚 Pembelajaran — {{ $dosen->nama }}
-        </h2>
+        <h1 class="h3 mb-0">📚 Pembelajaran — {{ $dosen->nama }}</h1>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Berhasil!</strong> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
+        </div>
+    @endif
 
-            @if (session('success'))
-            <div class="bg-emerald-100 border border-emerald-400 text-emerald-700 px-4 py-3 rounded mb-4">
-                <strong>Berhasil!</strong> {{ session('success') }}
-            </div>
-            @endif
-
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 border-b border-gray-200">
-
-                    <div class="flex justify-between items-center mb-4">
-                        <p class="text-sm text-gray-500">Total SKS: <strong>{{ $pembelajarans->sum('sks') }}</strong></p>
-                        <div class="flex gap-2">
-                            <a href="{{ route('dosen.show', $dosen->id) }}" class="inline-flex items-center px-4 py-2 bg-gray-200 rounded-md font-semibold text-xs text-gray-800 uppercase tracking-widest hover:bg-gray-300 transition">← Kembali</a>
-                            <a href="{{ route('dosen.pembelajaran.create', $dosen->id) }}" class="inline-flex items-center px-4 py-2 bg-emerald-600 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-emerald-700 transition">+ Tambah MK</a>
-                        </div>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 text-sm">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">No</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mata Kuliah</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">SKS</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Semester</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tahun Ajaran</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kelas</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse ($pembelajarans as $i => $pb)
-                                <tr>
-                                    <td class="px-4 py-3">{{ $pembelajarans->firstItem() + $i }}</td>
-                                    <td class="px-4 py-3">{{ $pb->nama_mk }}</td>
-                                    <td class="px-4 py-3">{{ $pb->sks }}</td>
-                                    <td class="px-4 py-3">{{ $pb->semester }}</td>
-                                    <td class="px-4 py-3">{{ $pb->tahun_ajaran }}</td>
-                                    <td class="px-4 py-3">{{ $pb->kelas }}</td>
-                                    <td class="px-4 py-3 flex gap-2">
-                                        <a href="{{ route('dosen.pembelajaran.edit', [$dosen->id, $pb->id]) }}" class="text-emerald-600 hover:text-emerald-900">Edit</a>
-                                        <form action="{{ route('dosen.pembelajaran.destroy', [$dosen->id, $pb->id]) }}" method="POST" onsubmit="return confirm('Hapus data pembelajaran ini?')">
-                                            @csrf @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="7" class="px-4 py-4 text-center text-gray-400 italic">Belum ada data pembelajaran.</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="mt-4">{{ $pembelajarans->links() }}</div>
-
+    <div class="card">
+        <div class="card-body bg-body-tertiary border-bottom">
+            <div class="row g-2 align-items-end">
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <p class="text-body-secondary mb-1 small">Total SKS: <strong>{{ $pembelajarans->sum('sks') }}</strong></p>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4 d-flex gap-2">
+                    <a href="{{ route('dosen.show', $dosen->id) }}" class="btn btn-outline-secondary btn-sm">← Kembali</a>
+                    <a href="{{ route('dosen.pembelajaran.create', $dosen->id) }}" class="btn btn-success btn-sm">+ Tambah MK</a>
                 </div>
             </div>
         </div>
+
+        <div class="table-responsive">
+            <table class="table table-sm table-striped table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="text-nowrap">No</th>
+                        <th class="text-nowrap">Mata Kuliah</th>
+                        <th class="text-nowrap">SKS</th>
+                        <th class="text-nowrap">Semester</th>
+                        <th class="text-nowrap">Tahun Ajaran</th>
+                        <th class="text-nowrap">Kelas</th>
+                        <th class="text-center text-nowrap">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($pembelajarans as $i => $pb)
+                    <tr>
+                        <td class="text-nowrap">{{ $pembelajarans->firstItem() + $i }}</td>
+                        <td class="text-nowrap">{{ $pb->nama_mk }}</td>
+                        <td class="text-nowrap">{{ $pb->sks }}</td>
+                        <td class="text-nowrap">{{ $pb->semester }}</td>
+                        <td class="text-nowrap">{{ $pb->tahun_ajaran }}</td>
+                        <td class="text-nowrap">{{ $pb->kelas }}</td>
+                        <td class="text-center text-nowrap">
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="{{ route('dosen.pembelajaran.edit', [$dosen->id, $pb->id]) }}" class="btn btn-outline-info btn-sm">Edit</a>
+                                <form action="{{ route('dosen.pembelajaran.destroy', [$dosen->id, $pb->id]) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus data pembelajaran ini?')">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Hapus</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="7" class="text-center py-5 text-body-secondary">Belum ada data pembelajaran.</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer py-3">
+            {{ $pembelajarans->links() }}
+        </div>
     </div>
-</x-app-layout>
+</x-adminlte-layout>

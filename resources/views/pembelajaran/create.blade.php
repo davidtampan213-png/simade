@@ -1,70 +1,66 @@
-<x-app-layout>
+<x-adminlte-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-emerald-800 leading-tight">
-            ➕ Tambah Pembelajaran — {{ $dosen->nama }}
-        </h2>
+        <h1 class="h3 mb-0">➕ Tambah Pembelajaran — {{ $dosen->nama }}</h1>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 border-b border-gray-200">
-
-                    @if ($errors->any())
-                        <div class="mb-4"><ul class="list-disc list-inside text-sm text-red-600">
-                            @foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach
-                        </ul></div>
-                    @endif
-
-                    <form method="POST" action="{{ route('dosen.pembelajaran.store', $dosen->id) }}">
-                        @csrf
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                            <div class="mb-4 md:col-span-2">
-                                <label for="nama_mk" class="block font-medium text-sm text-gray-700">Nama Mata Kuliah</label>
-                                <input id="nama_mk" type="text" name="nama_mk" value="{{ old('nama_mk') }}" required
-                                    class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50" />
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="sks" class="block font-medium text-sm text-gray-700">SKS</label>
-                                <input id="sks" type="number" name="sks" value="{{ old('sks') }}" min="1" max="6" required
-                                    class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50" />
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="semester" class="block font-medium text-sm text-gray-700">Semester</label>
-                                <select id="semester" name="semester" required
-                                    class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50">
-                                    <option value="">-- Pilih Semester --</option>
-                                    <option value="Ganjil" {{ old('semester') == 'Ganjil' ? 'selected' : '' }}>Ganjil</option>
-                                    <option value="Genap" {{ old('semester') == 'Genap' ? 'selected' : '' }}>Genap</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="tahun_ajaran" class="block font-medium text-sm text-gray-700">Tahun Ajaran</label>
-                                <input id="tahun_ajaran" type="text" name="tahun_ajaran" value="{{ old('tahun_ajaran') }}" placeholder="Contoh: 2024/2025" required
-                                    class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50" />
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="kelas" class="block font-medium text-sm text-gray-700">Kelas</label>
-                                <input id="kelas" type="text" name="kelas" value="{{ old('kelas') }}" placeholder="Contoh: A, TI-3A" required
-                                    class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50" />
-                            </div>
-
-                        </div>
-
-                        <div class="flex items-center justify-end mt-4 gap-3">
-                            <a href="{{ route('dosen.pembelajaran.index', $dosen->id) }}" class="underline text-sm text-gray-600 hover:text-gray-900">Batal</a>
-                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-emerald-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-emerald-700 transition">Simpan</button>
-                        </div>
-                    </form>
-
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title mb-0">Formulir Pembelajaran</h2>
+        </div>
+        <div class="card-body">
+            @if ($errors->any())
+                <div class="alert alert-danger" role="alert">
+                    <strong>Terdapat kesalahan input:</strong>
+                    <ul class="mb-0 mt-2">
+                        @foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach
+                    </ul>
                 </div>
-            </div>
+            @endif
+
+            <form method="POST" action="{{ route('dosen.pembelajaran.store', $dosen->id) }}">
+                @csrf
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="nama_mk" class="form-label">Nama Mata Kuliah</label>
+                        <input id="nama_mk" class="form-control @error('nama_mk') is-invalid @enderror" type="text" name="nama_mk" value="{{ old('nama_mk') }}" required>
+                        @error('nama_mk')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label for="sks" class="form-label">SKS</label>
+                        <input id="sks" class="form-control @error('sks') is-invalid @enderror" type="number" name="sks" value="{{ old('sks') }}" min="1" max="6" required>
+                        @error('sks')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label for="semester" class="form-label">Semester</label>
+                        <select id="semester" name="semester" class="form-select @error('semester') is-invalid @enderror" required>
+                            <option value="">-- Pilih Semester --</option>
+                            <option value="Ganjil" {{ old('semester') == 'Ganjil' ? 'selected' : '' }}>Ganjil</option>
+                            <option value="Genap" {{ old('semester') == 'Genap' ? 'selected' : '' }}>Genap</option>
+                        </select>
+                        @error('semester')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label for="tahun_ajaran" class="form-label">Tahun Ajaran</label>
+                        <input id="tahun_ajaran" class="form-control @error('tahun_ajaran') is-invalid @enderror" type="text" name="tahun_ajaran" value="{{ old('tahun_ajaran') }}" placeholder="Contoh: 2024/2025" required>
+                        @error('tahun_ajaran')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label for="kelas" class="form-label">Kelas</label>
+                        <input id="kelas" class="form-control @error('kelas') is-invalid @enderror" type="text" name="kelas" value="{{ old('kelas') }}" placeholder="Contoh: A, TI-3A" required>
+                        @error('kelas')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a href="{{ route('dosen.pembelajaran.index', $dosen->id) }}" class="btn btn-outline-secondary">Batal</a>
+                    <button type="submit" class="btn btn-success">Simpan</button>
+                </div>
+            </form>
         </div>
     </div>
-</x-app-layout>
+</x-adminlte-layout>
