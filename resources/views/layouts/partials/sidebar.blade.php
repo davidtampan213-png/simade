@@ -1,6 +1,7 @@
 @php
 $activeRole = session('active_role', 'mahasiswa');
 $userRole = Auth::user()?->role;
+$user = Auth::user();
 
 // Menu dari satu sumber data (array terstruktur)
 $mainMenus = [];
@@ -67,59 +68,55 @@ $systemMenus = [
 ];
 @endphp
 
-<aside class="app-sidebar bg-white shadow-sm" data-bs-theme="light">
-    <!-- Sidebar Brand -->
-    <div class="sidebar-brand border-bottom px-3 py-2.5 d-flex align-items-center justify-content-between">
-        <a href="{{ $activeRole === 'dosen' ? route('dashboard.dosen') : route('dashboard.mahasiswa') }}" class="brand-link d-flex align-items-center text-decoration-none text-dark gap-2">
-            <img src="{{ asset('logo.png') }}" alt="Logo UNSIQ" class="brand-image img-fluid" style="height: 38px; width: auto; max-width: 45px; object-fit: contain;">
-            <div class="d-flex flex-column lh-1">
-                <span class="brand-text fw-bold fs-5 tracking-wide text-dark">SIMADE</span>
-                <small class="text-secondary" style="font-size: 0.72rem; letter-spacing: 0.03em;">PORTAL AKADEMIK</small>
+<aside class="app-sidebar bg-white" data-bs-theme="light">
+    <!-- User Panel (ala SIMA UNSIQ) -->
+    <div class="user-panel px-3 py-3">
+        <div class="user-info">
+            <img src="{{ asset('logo.png') }}" alt="User Avatar" class="user-avatar">
+            <div class="user-details">
+                <p class="user-name mb-0">{{ $user->name ?? 'User' }}</p>
+                <p class="user-id mb-0">{{ $user->nim ?? $user->nip ?? $user->email ?? 'ID tidak tersedia' }}</p>
             </div>
-        </a>
+        </div>
     </div>
 
-    <!-- Sidebar Wrapper -->
-    <div class="sidebar-wrapper py-2">
-        <nav class="mt-2">
-            <ul class="nav sidebar-menu flex-column gap-1 px-2" data-lte-toggle="treeview" role="menu" data-accordion="false">
+    <!-- Menu Navigation -->
+    <div class="sidebar-wrapper">
+        <nav>
+            <ul class="nav sidebar-menu flex-column gap-0 px-2" data-lte-toggle="treeview" role="menu" data-accordion="false">
                 
-                <li class="nav-header text-uppercase px-3 pt-2 pb-1" style="font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em;">
-                    Menu Utama ({{ ucfirst($activeRole) }})
-                </li>
-
                 @foreach($mainMenus as $menu)
                     @if($menu['show'])
                         <li class="nav-item">
-                            <a href="{{ $menu['url'] }}" class="nav-link rounded-1 d-flex align-items-center gap-2 py-2 px-3 {{ $menu['active'] ? 'active' : '' }}">
+                            <a href="{{ $menu['url'] }}" class="nav-link rounded d-flex align-items-center gap-2 py-2.5 px-3 {{ $menu['active'] ? 'active' : '' }}">
                                 <i class="bi {{ $menu['icon'] }} fs-5"></i>
-                                <span class="fs-6">{{ $menu['title'] }}</span>
+                                <span class="fw-medium">{{ $menu['title'] }}</span>
                             </a>
                         </li>
                     @endif
                 @endforeach
-
-                <li class="nav-header text-uppercase text-white-50 px-3 pt-3 pb-1" style="font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em;">
-                    Pengaturan Akun
+                
+                <li class="nav-header px-3 pb-1 pt-3" style="font-size: 0.75rem; font-weight: 600; color: #4b5563; letter-spacing: 0.05em;">
+                    PENGATURAN AKUN
                 </li>
 
                 @foreach($systemMenus as $menu)
                     @if($menu['show'])
                         <li class="nav-item">
-                            <a href="{{ $menu['url'] }}" class="nav-link rounded-1 d-flex align-items-center gap-2 py-2 px-3 {{ $menu['active'] ? 'active' : '' }}">
+                            <a href="{{ $menu['url'] }}" class="nav-link rounded d-flex align-items-center gap-2 py-2.5 px-3 {{ $menu['active'] ? 'active' : '' }}">
                                 <i class="bi {{ $menu['icon'] }} fs-5"></i>
-                                <span class="fs-6">{{ $menu['title'] }}</span>
+                                <span class="fw-medium">{{ $menu['title'] }}</span>
                             </a>
                         </li>
                     @endif
                 @endforeach
 
-                <li class="nav-item mt-2 pt-2 border-top">
+                <li class="nav-item mt-3 pt-2">
                     <form method="POST" action="{{ route('logout') }}" class="m-0">
                         @csrf
-                        <button type="submit" class="nav-link rounded-1 d-flex align-items-center gap-2 py-2 px-3 text-danger w-100 border-0 bg-transparent text-start">
+                        <button type="submit" class="nav-link rounded d-flex align-items-center gap-2 py-2.5 px-3 text-danger w-100 border-0 bg-transparent text-start">
                             <i class="bi bi-box-arrow-right fs-5"></i>
-                            <span class="fs-6">Keluar Sistem</span>
+                            <span class="fw-medium">Keluar</span>
                         </button>
                     </form>
                 </li>

@@ -19,20 +19,20 @@
         <ul class="navbar-nav ms-auto align-items-center gap-2">
             <!-- Active role indicator badge -->
             <li class="nav-item">
-                <span class="badge text-bg-light border text-dark py-2 px-2.5 d-none d-sm-inline-flex align-items-center gap-1">
-                    <i class="bi bi-shield-check text-success"></i>
-                    <span>Mode: <strong class="text-capitalize">{{ session('active_role', 'mahasiswa') }}</strong></span>
-                    <span class="text-muted ms-1">({{ ucfirst(Auth::user()?->role ?? 'User') }})</span>
+                <span class="badge bg-light border border-secondary-subtle text-dark py-2 px-3 d-none d-sm-inline-flex align-items-center gap-1">
+                    <i class="bi bi-shield-check" style="color: #059669;"></i>
+                    <span>Mode: <strong class="text-capitalize text-dark">{{ session('active_role', 'mahasiswa') }}</strong></span>
+                    <span class="ms-1" style="color: #4b5563;">({{ ucfirst(Auth::user()?->role ?? 'User') }})</span>
                 </span>
             </li>
 
             <!-- User Menu Dropdown -->
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-center fw-bold" style="width: 32px; height: 32px; font-size: 0.85rem;">
+                    <span class="rounded-circle text-white d-inline-flex align-items-center justify-content-center fw-bold" style="width: 32px; height: 32px; font-size: 0.85rem; background-color: #059669;">
                         {{ strtoupper(substr(Auth::user()?->name ?? 'U', 0, 1)) }}
                     </span>
-                    <span class="d-none d-md-inline fw-medium text-truncate" style="max-width: 150px;">
+                    <span class="d-none d-md-inline fw-semibold text-truncate text-dark" style="max-width: 150px;">
                         {{ Auth::user()?->name }}
                     </span>
                 </a>

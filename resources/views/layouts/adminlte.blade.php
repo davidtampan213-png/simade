@@ -10,10 +10,71 @@
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
 
     @vite(['resources/scss/adminlte.scss', 'resources/js/adminlte.js'])
-    @stack('styles')
+    <style>
+        /* Header user-friendly ala SIMA UNSIQ */
+        .user-panel {
+            padding: 1.25rem;
+            border-bottom: 1px solid #e5e7eb;
+            background: #ffffff;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .user-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #059669;
+        }
+        
+        .user-details {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: #111827;
+            margin: 0;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .user-id {
+            font-size: 0.8rem;
+            color: #4b5563;
+            margin-top: 0.15rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Navbar brand */
+        .navbar-brand-logo {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+            margin-right: 0.5rem;
+        }
+        
+        .navbar-title {
+            font-weight: 700;
+            color: #111827;
+            font-size: 1.25rem;
+        }
+    </style>
+    
+    @yield('styles')
 </head>
 <body class="{{ session('active_role') === 'dosen' ? 'layout-dosen' : 'layout-mahasiswa' }} layout-fixed sidebar-expand-lg bg-body-tertiary">
-    <a href="#main-content" class="visually-hidden-focusable position-absolute top-0 start-0 m-2 p-2 bg-white text-success z-3 rounded">Lewati ke konten utama</a>
+    <a href="#main-content" class="visually-hidden-focusable position-absolute top-0 start-0 m-2 p-2 bg-white text-success z-3 rounded border">Lewati ke konten utama</a>
 
     <div class="app-wrapper">
         @include('layouts.partials.navbar')
@@ -30,6 +91,7 @@
 
             <div class="app-content">
                 <div class="container-fluid px-3 px-md-4 py-4">
+                    {{-- Only layout-level flash alerts rendered here --}}
                     @if(session('success'))
                         <div class="alert alert-success alert-dismissible fade show d-flex align-items-start gap-2" role="alert">
                             <i class="bi bi-check-circle-fill mt-1"></i>

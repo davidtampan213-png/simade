@@ -3,106 +3,68 @@
         <div class="row align-items-center">
             <div class="col">
                 <h1 class="h3 mb-0 text-dark fw-semibold">Dashboard Statistik Dosen</h1>
-                <p class="text-body-secondary small mb-0">Ringkasan profil, penelitian, pembelajaran, dan kinerja dosen SIMADE</p>
+                <p class="small mb-0 text-secondary fw-medium">Ringkasan profil, penelitian, pembelajaran, dan kinerja dosen SIMADE</p>
             </div>
         </div>
     </x-slot>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show d-flex align-items-start gap-2" role="alert">
-            <i class="bi bi-check-circle-fill mt-1"></i>
-            <div>
-                <strong>Berhasil!</strong> {{ session('success') }}
-            </div>
-            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Tutup"></button>
-        </div>
-    @endif
-
-    {{-- Row 1: Stat Cards (Small Box AdminLTE) --}}
-    <div class="row g-3 mb-4">
+    {{-- Row 1: Compact Stats (x-small-box) --}}
+    <div class="row g-3 mb-4" style="height: auto;">
         <!-- Total Dosen -->
         <div class="col-12 col-sm-6 col-lg-4">
-            @if(Auth::user()->isAdmin())
-                <a href="{{ route('dosen.index') }}" class="text-decoration-none">
-            @endif
-            <div class="small-box text-bg-primary h-100">
-                <div class="inner">
-                    <p class="mb-1">Total Dosen</p>
-                    <h3 class="fw-bold">{{ $totalDosen }}</h3>
-                    <small>Dosen terdaftar di sistem</small>
-                </div>
-                <div class="icon">
-                    <i class="bi bi-briefcase"></i>
-                </div>
-                @if(Auth::user()->isAdmin())
-                    <span class="small-box-footer">Lihat Detail <i class="bi bi-arrow-right"></i></span>
-                @else
-                    <div class="small-box-footer">&nbsp;</div>
-                @endif
-            </div>
-            @if(Auth::user()->isAdmin())
-                </a>
-            @endif
+            <x-x-small-box 
+                title="Total Dosen" 
+                :value="$totalDosen" 
+                subtitle="Dosen terdaftar di sistem"
+                icon="bi bi-briefcase"
+                variant="primary"
+                :url="Auth::user()->isAdmin() ? route('dosen.index') : null"
+                linkText="Lihat Detail"
+            />
         </div>
 
         <!-- Dosen Aktif -->
         <div class="col-12 col-sm-6 col-lg-4">
-            <div class="small-box text-bg-success h-100">
-                <div class="inner">
-                    <p class="mb-1">Dosen Aktif</p>
-                    <h3 class="fw-bold">{{ $totalDosenAktif }}</h3>
-                    <small>Status aktif bertugas</small>
-                </div>
-                <div class="icon">
-                    <i class="bi bi-person-check"></i>
-                </div>
-                <div class="small-box-footer">&nbsp;</div>
-            </div>
+            <x-x-small-box 
+                title="Dosen Aktif" 
+                :value="$totalDosenAktif" 
+                subtitle="Status aktif bertugas"
+                icon="bi bi-person-check"
+                variant="success"
+            />
         </div>
 
         <!-- Dosen Nonaktif -->
         <div class="col-12 col-sm-6 col-lg-4">
-            <div class="small-box text-bg-danger h-100">
-                <div class="inner">
-                    <p class="mb-1">Dosen Nonaktif</p>
-                    <h3 class="fw-bold">{{ $totalDosenNonaktif }}</h3>
-                    <small>Status tidak aktif</small>
-                </div>
-                <div class="icon">
-                    <i class="bi bi-person-x"></i>
-                </div>
-                <div class="small-box-footer">&nbsp;</div>
-            </div>
+            <x-x-small-box 
+                title="Dosen Nonaktif" 
+                :value="$totalDosenNonaktif" 
+                subtitle="Status tidak aktif"
+                icon="bi bi-person-x"
+                variant="danger"
+            />
         </div>
 
         <!-- Total Penelitian -->
         <div class="col-12 col-sm-6 col-lg-4">
-            <div class="small-box text-bg-info h-100">
-                <div class="inner">
-                    <p class="mb-1">Total Penelitian</p>
-                    <h3 class="fw-bold">{{ $totalPenelitian }}</h3>
-                    <small>Publikasi dan riset tercatat</small>
-                </div>
-                <div class="icon">
-                    <i class="bi bi-lightbulb"></i>
-                </div>
-                <div class="small-box-footer">&nbsp;</div>
-            </div>
+            <x-x-small-box 
+                title="Total Penelitian" 
+                :value="$totalPenelitian" 
+                subtitle="Publikasi dan riset tercatat"
+                icon="bi bi-lightbulb"
+                variant="info"
+            />
         </div>
 
         <!-- Total Mata Kuliah -->
         <div class="col-12 col-sm-6 col-lg-4">
-            <div class="small-box text-bg-warning h-100">
-                <div class="inner">
-                    <p class="mb-1">Total Mata Kuliah</p>
-                    <h3 class="fw-bold">{{ $totalPembelajaran }}</h3>
-                    <small>{{ $totalSks }} SKS total</small>
-                </div>
-                <div class="icon">
-                    <i class="bi bi-book"></i>
-                </div>
-                <div class="small-box-footer">&nbsp;</div>
-            </div>
+            <x-x-small-box 
+                title="Total Mata Kuliah" 
+                :value="$totalPembelajaran" 
+                :subtitle="$totalSks . ' SKS total'"
+                icon="bi bi-book"
+                variant="warning"
+            />
         </div>
 
         <!-- Kinerja Sangat Baik -->
@@ -112,30 +74,52 @@
             $sangatBaik = $kinerjaMap->get('Sangat Baik')?->total ?? 0;
         @endphp
         <div class="col-12 col-sm-6 col-lg-4">
-            <div class="small-box text-bg-secondary h-100">
-                <div class="inner">
-                    <p class="mb-1">Kinerja Sangat Baik</p>
-                    <h3 class="fw-bold">{{ $sangatBaik }}</h3>
-                    <small>dari {{ $totalKinerja }} penilaian</small>
-                </div>
-                <div class="icon">
-                    <i class="bi bi-award"></i>
-                </div>
-                <div class="small-box-footer">&nbsp;</div>
-            </div>
+            <x-x-small-box 
+                title="Kinerja Sangat Baik" 
+                :value="$sangatBaik" 
+                :subtitle="'dari ' . $totalKinerja . ' penilaian'"
+                icon="bi bi-award"
+                variant="success"
+            />
         </div>
     </div>
 
     {{-- Row 2: Charts --}}
-    <div class="row g-4 mb-4">
+    <style>
+        .dosen-chart-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
+            overflow: hidden;
+        }
+        .dosen-chart-card .card-header {
+            padding: 16px 20px 12px;
+            background: #fff;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .dosen-chart-card .card-title {
+            color: #1f2937;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        .dosen-chart-card .card-body {
+            padding: 16px 20px 20px;
+        }
+        .dosen-chart-canvas {
+            height: 240px;
+        }
+    </style>
+    <div class="row g-3 mb-4">
         <!-- Dosen per Jurusan (Pie) -->
         <div class="col-12 col-lg-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-header border-0">
+            <div class="card dosen-chart-card h-100">
+                <div class="card-header">
                     <h3 class="card-title mb-0">Dosen per Jurusan</h3>
                 </div>
                 <div class="card-body">
-                    <div class="position-relative" style="height: 280px;">
+                    <div class="position-relative dosen-chart-canvas">
                         <canvas id="dosenJurusanChart"></canvas>
                     </div>
                 </div>
@@ -144,12 +128,12 @@
 
         <!-- Dosen per Jabatan (Bar Horizontal) -->
         <div class="col-12 col-lg-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-header border-0">
+            <div class="card dosen-chart-card h-100">
+                <div class="card-header">
                     <h3 class="card-title mb-0">Dosen per Jabatan</h3>
                 </div>
                 <div class="card-body">
-                    <div class="position-relative" style="height: 280px;">
+                    <div class="position-relative dosen-chart-canvas">
                         <canvas id="dosenJabatanChart"></canvas>
                     </div>
                 </div>
@@ -158,12 +142,12 @@
 
         <!-- Kinerja per Kategori (Doughnut) -->
         <div class="col-12 col-lg-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-header border-0">
+            <div class="card dosen-chart-card h-100">
+                <div class="card-header">
                     <h3 class="card-title mb-0">Distribusi Kinerja Dosen</h3>
                 </div>
                 <div class="card-body">
-                    <div class="position-relative" style="height: 280px;">
+                    <div class="position-relative dosen-chart-canvas">
                         <canvas id="kinerjaKategoriChart"></canvas>
                     </div>
                 </div>
@@ -172,12 +156,12 @@
 
         <!-- Dosen per Status (Bar) -->
         <div class="col-12 col-lg-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-header border-0">
+            <div class="card dosen-chart-card h-100">
+                <div class="card-header">
                     <h3 class="card-title mb-0">Dosen per Status</h3>
                 </div>
                 <div class="card-body">
-                    <div class="position-relative" style="height: 280px;">
+                    <div class="position-relative dosen-chart-canvas">
                         <canvas id="dosenStatusChart"></canvas>
                     </div>
                 </div>
@@ -193,14 +177,31 @@
         document.addEventListener('DOMContentLoaded', function() {
             Chart.register(ChartDataLabels);
 
+            Chart.defaults.font.family = 'Inter, sans-serif';
+            Chart.defaults.font.size = 12;
+            Chart.defaults.color = '#4b5563';
+
+            const legendOptions = {
+                position: 'bottom',
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    boxWidth: 8,
+                    font: { size: 12 },
+                    color: '#4b5563',
+                },
+            };
+            const axisTicks = { color: '#4b5563', font: { size: 12 } };
+            const gridOptions = { color: '#f1f5f9', drawBorder: false };
+            const borderOptions = { display: false };
             const distinctBgColors = [
-                'rgba(16, 185, 129, 0.85)',
-                'rgba(59, 130, 246, 0.85)',
-                'rgba(139, 92, 246, 0.85)',
-                'rgba(245, 158, 11, 0.85)',
-                'rgba(236, 72, 153, 0.85)',
-                'rgba(14, 165, 233, 0.85)',
-                'rgba(239, 68, 68, 0.85)',
+                '#6ee7b7',
+                '#34d399',
+                '#a7f3d0',
+                '#93c5fd',
+                '#94a3b8',
+                '#cbd5e1',
+                '#e2e8f0',
             ];
 
             // --- Dosen Jurusan Chart (Pie) ---
@@ -209,14 +210,14 @@
                 type: 'pie',
                 data: {
                     labels: dosenJurusanDataRaw.map(i => i.jurusan || 'Unknown'),
-                    datasets: [{ data: dosenJurusanDataRaw.map(i => i.total), backgroundColor: distinctBgColors, borderWidth: 1 }]
+                    datasets: [{ data: dosenJurusanDataRaw.map(i => i.total), backgroundColor: distinctBgColors, borderWidth: 0 }]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'bottom' },
+                        legend: legendOptions,
                         datalabels: {
-                            color: '#fff', font: { weight: 'bold', size: 12 },
+                            color: '#1f2937', font: { size: 12, weight: 'bold' },
                             formatter: (value, ctx) => {
                                 let sum = ctx.chart.data.datasets[0].data.reduce((a, b) => Number(a) + Number(b), 0);
                                 return sum > 0 ? (value * 100 / sum).toFixed(1) + '%' : '';
@@ -235,18 +236,21 @@
                     datasets: [{
                         label: 'Jumlah',
                         data: dosenJabatanDataRaw.map(i => i.total),
-                        backgroundColor: 'rgba(5, 150, 105, 0.85)',
-                        borderColor: '#047857',
-                        borderWidth: 1, borderRadius: 4
+                        backgroundColor: '#93c5fd',
+                        borderRadius: 6,
+                        barThickness: 26
                     }]
                 },
                 options: {
                     indexAxis: 'y',
                     responsive: true, maintainAspectRatio: false,
-                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } },
+                    scales: {
+                        x: { beginAtZero: true, ticks: { stepSize: 1, ...axisTicks }, grid: gridOptions, border: borderOptions },
+                        y: { grid: gridOptions, border: borderOptions, ticks: axisTicks }
+                    },
                     plugins: {
                         legend: { display: false },
-                        datalabels: { color: '#047857', anchor: 'end', align: 'right', font: { weight: 'bold' } }
+                        datalabels: { color: '#4b5563', anchor: 'end', align: 'right', font: { size: 12, weight: 'bold' } }
                     }
                 }
             });
@@ -254,10 +258,10 @@
             // --- Kinerja per Kategori (Doughnut) ---
             const kinerjaDataRaw = @json($kinerjaPerKategori);
             const kinerjaColors = {
-                'Sangat Baik': 'rgba(16, 185, 129, 0.85)',
-                'Baik':        'rgba(59, 130, 246, 0.85)',
-                'Cukup':       'rgba(245, 158, 11, 0.85)',
-                'Kurang':      'rgba(239, 68, 68, 0.85)',
+                'Sangat Baik': '#34d399',
+                'Baik':        '#6ee7b7',
+                'Cukup':       '#93c5fd',
+                'Kurang':      '#cbd5e1',
             };
             new Chart(document.getElementById('kinerjaKategoriChart').getContext('2d'), {
                 type: 'doughnut',
@@ -265,16 +269,16 @@
                     labels: kinerjaDataRaw.map(i => i.kategori),
                     datasets: [{
                         data: kinerjaDataRaw.map(i => i.total),
-                        backgroundColor: kinerjaDataRaw.map(i => kinerjaColors[i.kategori] || 'rgba(107,114,128,0.85)'),
-                        borderWidth: 1
+                        backgroundColor: kinerjaDataRaw.map(i => kinerjaColors[i.kategori] || '#e2e8f0'),
+                        borderWidth: 0
                     }]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'bottom' },
+                        legend: legendOptions,
                         datalabels: {
-                            color: '#fff', font: { weight: 'bold', size: 12 },
+                            color: '#1f2937', font: { size: 12, weight: 'bold' },
                             formatter: (value, ctx) => {
                                 let sum = ctx.chart.data.datasets[0].data.reduce((a, b) => Number(a) + Number(b), 0);
                                 return sum > 0 ? (value * 100 / sum).toFixed(1) + '%' : '';
@@ -286,7 +290,7 @@
 
             // --- Dosen Status Chart (Bar) ---
             const dosenStatusDataRaw = @json($dosenPerStatus);
-            const statusColors = dosenStatusDataRaw.map(i => i.status === 'Aktif' ? 'rgba(16,185,129,0.85)' : 'rgba(239,68,68,0.85)');
+            const statusColors = dosenStatusDataRaw.map(i => i.status === 'Aktif' ? '#6ee7b7' : '#cbd5e1');
             new Chart(document.getElementById('dosenStatusChart').getContext('2d'), {
                 type: 'bar',
                 data: {
@@ -294,15 +298,18 @@
                     datasets: [{
                         label: 'Jumlah Dosen',
                         data: dosenStatusDataRaw.map(i => i.total),
-                        backgroundColor: statusColors, borderWidth: 1, borderRadius: 4
+                        backgroundColor: statusColors, borderRadius: 6, barThickness: 26
                     }]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1, ...axisTicks }, grid: gridOptions, border: borderOptions },
+                        x: { grid: gridOptions, border: borderOptions, ticks: axisTicks }
+                    },
                     plugins: {
                         legend: { display: false },
-                        datalabels: { anchor: 'end', align: 'top', font: { weight: 'bold' }, formatter: v => v }
+                        datalabels: { color: '#4b5563', anchor: 'end', align: 'top', font: { size: 12, weight: 'bold' }, formatter: v => v }
                     }
                 }
             });

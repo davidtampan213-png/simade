@@ -21,13 +21,13 @@
             position: relative;
         }
         
-        // Foto latar samar di halaman auth (logo.png di atas foto)
+        /* Subtle campus photo overlay on auth pages (per user requirement) */
         body.auth-page::before {
             content: "";
             position: fixed;
             inset: 0;
             background: url('/images/bg-login.jpg') center / cover no-repeat;
-            opacity: 0.10;
+            opacity: 0.08;
             pointer-events: none;
             z-index: 0;
         }
@@ -38,61 +38,83 @@
             z-index: 1;
         }
         
-        /* Konten utama area abu muda tanpa foto */
+        /* Solid light background without blur or transparency */
         .auth-main { 
             padding: 2rem 1rem;
-            background-color: rgba(244, 247, 245, 0.9);
-            backdrop-filter: blur(4px);
+            background-color: #f4f7f5;
         }
         
+        /* Brand panel with solid emerald background */
         .auth-brand-panel {
-            background: linear-gradient(160deg, #064e3b 0%, #047857 100%);
+            background-color: #065f46;
             color: #fff;
             padding: 3rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-right: 1px solid #044e39;
         }
         .auth-brand-inner { max-width: 27rem; }
+        .auth-brand-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
         .auth-logo {
-            width: 76px;
-            height: 76px;
+            width: auto;
+            height: 64px;
             object-fit: contain;
-            background: #fff;
-            border: 3px solid rgba(255,255,255,.78);
-            border-radius: .25rem;
-            padding: .2rem;
         }
         .auth-brand-title {
-            margin: 1.5rem 0 .35rem;
+            margin: 0;
+            line-height: 1;
             font-family: 'Source Serif 4', serif;
             font-size: clamp(2rem, 4vw, 3rem);
             font-weight: 700;
             letter-spacing: .02em;
+            color: #ffffff;
         }
-        .auth-brand-copy { color: rgba(255,255,255,.78); font-size: 1rem; line-height: 1.65; }
-        .auth-main { padding: 2rem 1rem; }
+        .auth-brand-copy {
+            margin-top: 0.75rem;
+        }
+        .auth-brand-copy { 
+            color: #d1fae5; 
+            font-size: 1rem; 
+            line-height: 1.65; 
+        }
+        
+        /* Solid white login card without resting shadow */
         .auth-card { width: 100%; max-width: 31rem; }
-        .auth-card .card { border: 1px solid #dce5e0; border-top: 4px solid var(--simade-emerald); box-shadow: 0 2px 8px rgba(20, 55, 43, .08); }
+        .auth-card .card { 
+            background-color: #ffffff;
+            border: 1px solid #dce5e0; 
+            border-top: 4px solid var(--simade-emerald); 
+            box-shadow: none;
+        }
         .auth-card-title { font-family: 'Source Serif 4', serif; color: #12372a; font-size: 1.6rem; }
-        .auth-card-subtitle { color: #64748b; font-size: .95rem; }
-        .auth-page .form-control, .auth-page .form-check-input { border-radius: .25rem; }
+        .auth-card-subtitle { color: #4b5563; font-size: .95rem; }
+        .auth-page .form-control, .auth-page .form-check-input { border-radius: .25rem; border-color: #cbd5e1; }
+        .auth-page .form-control:focus { border-color: var(--simade-emerald); box-shadow: 0 0 0 0.2rem rgba(4, 120, 87, 0.15); }
         .auth-page .form-control { min-height: 2.75rem; }
         .auth-page .btn { border-radius: .25rem; font-weight: 600; }
-        .auth-page .btn-primary { background-color: var(--simade-emerald); border-color: var(--simade-emerald); }
+        .auth-page .btn-primary { background-color: var(--simade-emerald); border-color: var(--simade-emerald); color: #ffffff; }
         .auth-page .btn-primary:hover, .auth-page .btn-primary:focus { background-color: var(--simade-emerald-dark); border-color: var(--simade-emerald-dark); }
         .auth-page a { color: var(--simade-emerald); }
         .auth-page a:hover { color: var(--simade-emerald-dark); }
-        @media (max-width: 991.98px) { .auth-brand-panel { padding: 2rem 1.5rem; } .auth-brand-title { margin-top: 1rem; } }
+        @media (max-width: 991.98px) { 
+            .auth-brand-panel { padding: 2rem 1.5rem; border-right: none; border-bottom: 1px solid #044e39; } 
+            .auth-logo { height: 56px; }
+        }
     </style>
     @stack('styles')
 </head>
 <body class="auth-page">
-    <a href="#main-content" class="visually-hidden-focusable position-absolute top-0 start-0 m-2 p-2 bg-white text-success z-3 rounded">Lewati ke konten utama</a>
+    <a href="#main-content" class="visually-hidden-focusable position-absolute top-0 start-0 m-2 p-2 bg-white text-success z-3 rounded border">Lewati ke konten utama</a>
     <div class="container-fluid auth-shell p-0">
         <div class="row g-0 min-vh-100">
             <aside class="col-lg-5 d-flex align-items-center auth-brand-panel">
                 <div class="auth-brand-inner mx-lg-auto">
-                    <img src="{{ asset('logo.png') }}" alt="Logo SIMADE" class="auth-logo">
-                    <h1 class="auth-brand-title">SIMADE</h1>
+                    <div class="auth-brand-row">
+                        <img src="{{ asset('logo.png') }}" alt="Logo SIMADE" class="auth-logo">
+                        <h1 class="auth-brand-title">SIMADE</h1>
+                    </div>
                     <p class="mb-0 auth-brand-copy">Sistem Informasi Manajemen Dosen</p>
                 </div>
             </aside>
