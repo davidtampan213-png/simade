@@ -67,12 +67,12 @@
             }
 
             .mahasiswa-index .filter-panel .form-label {
-                font-size: 12px;
+                font-size: 0.75rem;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
-                color: var(--slate-500);
+                color: #64748b;
                 font-weight: 600;
-                margin-bottom: 6px;
+                margin-bottom: 0.4rem;
             }
 
             .mahasiswa-index .filter-panel .form-control,
@@ -80,10 +80,12 @@
                 background: var(--white);
                 border: 1px solid var(--gray-300);
                 color: var(--gray-900);
-                height: 40px;
-                border-radius: 8px;
+                height: 46px;
+                border-radius: 10px;
                 font-size: 14px;
                 padding: 0 12px;
+                width: 100%;
+                min-width: 0;
                 transition: border-color 0.15s ease, box-shadow 0.15s ease;
             }
 
@@ -106,7 +108,8 @@
                 background-position: right 0.75rem center;
                 background-size: 16px 12px;
                 padding-right: 2.25rem;      /* ruang untuk panah */
-                min-width: 140px;            /* cegah teks terpotong */
+                min-width: 0;                /* pastikan tidak overflow/overlap */
+                width: 100%;
                 -webkit-appearance: none;
                 appearance: none;
                 background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
@@ -114,7 +117,7 @@
 
             .mahasiswa-index .filter-actions {
                 display: flex;
-                gap: 8px;
+                gap: 0.5rem;
                 align-items: center;
             }
 
@@ -123,10 +126,14 @@
                 border-color: var(--green);
                 color: var(--white);
                 font-weight: 600;
-                height: 40px;
+                height: 42px;
+                min-width: 110px;
                 border-radius: 8px;
                 padding: 0 16px;
                 font-size: 13px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
                 transition: background-color 0.15s ease, border-color 0.15s ease;
             }
 
@@ -142,10 +149,14 @@
                 border: 1px solid var(--gray-600);
                 color: var(--gray-600);
                 font-weight: 600;
-                height: 40px;
+                height: 42px;
+                min-width: 110px;
                 border-radius: 8px;
                 padding: 0 16px;
                 font-size: 13px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
                 transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
             }
 
@@ -380,12 +391,12 @@
         {{-- Filter Panel --}}
         <div class="filter-panel">
             <form method="GET" action="{{ route('mahasiswa.index') }}" class="row g-3 align-items-end">
-                <div class="col-12 col-md-4 col-xl-3">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <label class="form-label" for="search">Cari NIM / Nama</label>
                     <input id="search" type="text" name="search" placeholder="Cari..." value="{{ request('search') }}" class="form-control form-control-sm"/>
                 </div>
 
-                <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
                     <label class="form-label" for="fakultas">Fakultas</label>
                     <select id="fakultas" name="fakultas" class="form-select form-select-sm" onchange="updateProdi(this.value)">
                         <option value="">Semua Fakultas</option>
@@ -395,7 +406,7 @@
                     </select>
                 </div>
 
-                <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
                     <label class="form-label" for="prodiSelect">Program Studi</label>
                     <select name="program_studi" id="prodiSelect" class="form-select form-select-sm">
                         <option value="">Semua Prodi</option>
@@ -405,7 +416,7 @@
                     </select>
                 </div>
 
-                <div class="col-6 col-sm-4 col-md-3 col-xl-1">
+                <div class="col-12 col-sm-6 col-md-3 col-lg-1">
                     <label class="form-label" for="jenjang">Jenjang</label>
                     <select id="jenjang" name="jenjang" class="form-select form-select-sm">
                         <option value="">Semua</option>
@@ -415,7 +426,7 @@
                     </select>
                 </div>
 
-                <div class="col-6 col-sm-4 col-md-3 col-xl-1">
+                <div class="col-12 col-sm-6 col-md-3 col-lg-2">
                     <label class="form-label" for="semester">Semester</label>
                     <select id="semester" name="semester" class="form-select form-select-sm">
                         <option value="">Semua</option>
@@ -425,7 +436,7 @@
                     </select>
                 </div>
 
-                <div class="col-6 col-sm-4 col-md-3 col-xl-1">
+                <div class="col-12 col-sm-6 col-md-3 col-lg-2">
                     <label class="form-label" for="status">Status</label>
                     <select id="status" name="status" class="form-select form-select-sm">
                         <option value="">Semua</option>
@@ -435,7 +446,7 @@
                     </select>
                 </div>
 
-                <div class="col-12 col-md-auto d-flex gap-2 filter-actions">
+                <div class="col-12 d-flex gap-2 filter-actions">
                     <button type="submit" class="btn btn-filter btn-sm"><i class="bi bi-funnel me-1"></i>Filter</button>
                     <a href="{{ route('mahasiswa.index') }}" class="btn btn-reset btn-sm">Reset</a>
                 </div>
