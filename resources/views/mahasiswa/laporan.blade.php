@@ -1,11 +1,77 @@
 <x-adminlte-layout>
+    <style>
+        .laporan-mahasiswa {
+            --laporan-ink: #0f172a;
+            --laporan-body: #1f2937;
+            --laporan-muted: #64748b;
+            --laporan-line: #e2e8f0;
+            --laporan-soft: #f1f5f9;
+            --laporan-table-head: #f8fafc;
+            --laporan-green: #16a34a;
+        }
+
+        .laporan-page-title { color: #0f172a; font-weight: 700; }
+        .laporan-mahasiswa .laporan-filter-card,
+        .laporan-mahasiswa .laporan-chart-card,
+        .laporan-mahasiswa .laporan-table-card {
+            background: #fff;
+            border: 1px solid var(--laporan-line);
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, .06) !important;
+            overflow: hidden;
+        }
+        .laporan-mahasiswa .laporan-filter-card .card-body { padding: 1.25rem; }
+        .laporan-mahasiswa .form-label {
+            color: var(--laporan-muted) !important;
+            font-size: .75rem;
+            font-weight: 600 !important;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            margin-bottom: .4rem;
+        }
+        .laporan-mahasiswa .form-select {
+            height: 46px;
+            color: var(--laporan-ink);
+            background-color: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12' viewBox='0 0 16 12'%3E%3Cpath fill='none' stroke='%23475569' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.75' d='m3 4 5 5 5-5'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right .75rem center;
+            background-size: 16px 12px;
+            box-shadow: none;
+        }
+        .laporan-mahasiswa .form-select:focus { border-color: var(--laporan-green); box-shadow: 0 0 0 .2rem rgba(22, 163, 74, .15); }
+        .laporan-mahasiswa .btn-apply { background: #16a34a; border-color: #16a34a; color: #fff; min-height: 46px; }
+        .laporan-mahasiswa .btn-apply:hover { background: #15803d; border-color: #15803d; color: #fff; }
+        .laporan-mahasiswa .laporan-active-filter { background: var(--laporan-soft); border: 1px solid var(--laporan-line) !important; color: var(--laporan-ink); }
+        .laporan-mahasiswa .laporan-active-filter .badge { background: #16a34a !important; color: #fff !important; }
+        .laporan-mahasiswa .laporan-clear-filter { color: #dc2626; text-decoration: none; font-weight: 600; }
+        .laporan-mahasiswa .laporan-clear-filter:hover { color: #b91c1c; text-decoration: underline; }
+        .laporan-mahasiswa .small-box .inner p,
+        .laporan-mahasiswa .small-box .inner h3 { color: #fff; }
+        .laporan-mahasiswa .small-box .icon { opacity: .45; }
+        .laporan-mahasiswa .small-box .small-box-footer { background: rgba(0, 0, 0, .12); color: #fff; }
+        .laporan-mahasiswa .small-box.text-bg-warning .inner p,
+        .laporan-mahasiswa .small-box.text-bg-warning .inner h3,
+        .laporan-mahasiswa .small-box.text-bg-warning .small-box-footer { color: #1f2937; }
+        .laporan-mahasiswa .laporan-chart-card .card-header,
+        .laporan-mahasiswa .laporan-table-card .card-header { background: #fff; border-color: var(--laporan-line); }
+        .laporan-mahasiswa .card-title,
+        .laporan-mahasiswa .card-body { color: var(--laporan-body); }
+        .laporan-mahasiswa .laporan-chart-card .card-title { color: #1f2937; }
+        .laporan-mahasiswa .table { --bs-table-bg: #fff; --bs-table-color: #1f2937; --bs-table-striped-bg: #f8fafc; --bs-table-hover-bg: #f1f5f9; margin-bottom: 0; }
+        .laporan-mahasiswa .table > :not(caption) > * > * { border-color: var(--laporan-line); }
+        .laporan-mahasiswa .table thead th { background: var(--laporan-table-head) !important; color: #334155; }
+    </style>
+
     <x-slot name="header">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-lg-between gap-3">
             <div class="d-flex items-center gap-3">
                 <a href="{{ route('dashboard.mahasiswa') }}" class="text-success text-decoration-none">
                     <i class="bi bi-arrow-left"></i>
                 </a>
-                <h1 class="h3 mb-0 fw-semibold">Laporan Mahasiswa per Fakultas</h1>
+                <h1 class="h3 mb-0 fw-semibold laporan-page-title">Laporan Mahasiswa per Fakultas</h1>
             </div>
             <div class="d-flex flex-wrap gap-2">
                 <a href="{{ route('mahasiswa.laporan.export', array_merge(request()->query(), ['format'=>'excel'])) }}"
@@ -28,15 +94,15 @@
         </div>
     @endif
 
-    <div class="row g-3">
+    <div class="row g-3 laporan-mahasiswa">
         {{-- Filter --}}
         <div class="col-12">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm laporan-filter-card">
                 <div class="card-body">
                     <form method="GET" action="{{ route('mahasiswa.laporan') }}" class="row g-3 align-items-end">
                         <div class="col-12 col-sm-5">
-                            <label for="tahun_akademik" class="form-label small fw-semibold text-uppercase">Tahun Akademik</label>
-                            <select id="tahun_akademik" name="tahun_akademik" class="form-select form-select-sm">
+                            <label for="tahun_akademik" class="form-label">Tahun Akademik</label>
+                            <select id="tahun_akademik" name="tahun_akademik" class="form-select">
                                 <option value="">Semua Tahun</option>
                                 @foreach($tahunList as $ta)
                                     <option value="{{ $ta }}" {{ $tahunAkademik == $ta ? 'selected' : '' }}>{{ $ta }}</option>
@@ -44,8 +110,8 @@
                             </select>
                         </div>
                         <div class="col-12 col-sm-5">
-                            <label for="semester" class="form-label small fw-semibold text-uppercase">Semester</label>
-                            <select id="semester" name="semester" class="form-select form-select-sm">
+                            <label for="semester" class="form-label">Semester</label>
+                            <select id="semester" name="semester" class="form-select">
                                 <option value="">Semua</option>
                                 @for($s=1; $s<=14; $s++)
                                     <option value="{{ $s }}" {{ $semester == $s ? 'selected' : '' }}>Semester {{ $s }}</option>
@@ -53,25 +119,25 @@
                             </select>
                         </div>
                         <div class="col-12 col-sm-2 d-flex gap-2">
-                            <button type="submit" class="btn btn-success btn-sm w-100 d-flex align-items-center justify-content-center gap-1">
+                            <button type="submit" class="btn btn-apply btn-sm w-100 d-flex align-items-center justify-content-center gap-1">
                                 <i class="bi bi-funnel"></i> Terapkan
                             </button>
                         </div>
                     </form>
 
                     @if($tahunAkademik || $semester)
-                        <div class="alert alert-light border mt-3 mb-0 d-flex flex-wrap align-items-center justify-content-between gap-2 small">
+                        <div class="alert laporan-active-filter mt-3 mb-0 d-flex flex-wrap align-items-center justify-content-between gap-2 small">
                             <div class="d-flex flex-wrap align-items-center gap-2">
-                                <i class="bi bi-funnel-fill text-success"></i>
+                                <i class="bi bi-funnel-fill"></i>
                                 <span>Filter aktif:</span>
                                 @if($tahunAkademik)
-                                    <span class="badge text-bg-success">T.A. {{ $tahunAkademik }}</span>
+                                    <span class="badge">T.A. {{ $tahunAkademik }}</span>
                                 @endif
                                 @if($semester)
-                                    <span class="badge text-bg-success">Semester {{ $semester }}</span>
+                                    <span class="badge">Semester {{ $semester }}</span>
                                 @endif
                             </div>
-                            <a href="{{ route('mahasiswa.laporan') }}" class="link-success small">Hapus filter</a>
+                            <a href="{{ route('mahasiswa.laporan') }}" class="laporan-clear-filter small">Hapus filter</a>
                         </div>
                     @endif
                 </div>
@@ -131,7 +197,7 @@
         {{-- Grafik Batang Perbandingan per Fakultas --}}
         @if($statsPerFakultas->count() > 0)
         <div class="col-12">
-            <div class="card shadow-sm h-100">
+            <div class="card shadow-sm h-100 laporan-chart-card">
                 <div class="card-header">
                     <h3 class="card-title mb-0">Perbandingan Status per Fakultas</h3>
                 </div>
@@ -146,7 +212,7 @@
 
         {{-- Tabel Statistik per Fakultas --}}
         <div class="col-12">
-            <div class="card shadow-sm h-100">
+            <div class="card shadow-sm h-100 laporan-table-card">
                 <div class="card-header border-0">
                     <h3 class="card-title mb-0">Statistik per Fakultas</h3>
                     <p class="card-subtitle text-body-secondary small mb-0">Klik nama fakultas untuk melihat detail per program studi</p>
@@ -259,7 +325,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'top' },
+                        legend: { position: 'top', labels: { color: '#334155' } },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
@@ -272,9 +338,10 @@
                         x: {
                             beginAtZero: true,
                             stacked: true,
-                            ticks: { stepSize: 1 }
+                            ticks: { color: '#334155', stepSize: 1 },
+                            grid: { color: '#e2e8f0' }
                         },
-                        y: { stacked: true }
+                        y: { stacked: true, ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } }
                     }
                 }
             });
