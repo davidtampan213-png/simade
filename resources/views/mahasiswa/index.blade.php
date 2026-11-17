@@ -99,10 +99,17 @@
                 outline: none;
             }
 
-            .mahasiswa-index .filter-panel .form-select {
-                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-                background-position: right 10px center;
+            /* Perbaiki dropdown filter: panah kustom, padding kanan, lebar aman */
+            .mahasiswa-index .filter-panel .form-select,
+            .mahasiswa-index .filter-panel select.form-control {
+                background-repeat: no-repeat;
+                background-position: right 0.75rem center;
                 background-size: 16px 12px;
+                padding-right: 2.25rem;      /* ruang untuk panah */
+                min-width: 140px;            /* cegah teks terpotong */
+                -webkit-appearance: none;
+                appearance: none;
+                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
             }
 
             .mahasiswa-index .filter-actions {
