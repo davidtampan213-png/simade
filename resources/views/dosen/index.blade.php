@@ -33,18 +33,21 @@
             }
 
             .dosen-index .card {
-                background: transparent;
-                border: 0;
-                box-shadow: none;
+                background: var(--white);
+                border: 1px solid var(--slate-200);
+                border-radius: 14px;
+                box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+                overflow: hidden;
             }
 
             .dosen-index .filter-panel {
                 padding: 20px 24px;
-                margin-bottom: 16px;
+                margin-bottom: 0;
                 background: var(--white);
-                border: 1px solid var(--slate-200);
-                border-radius: 14px;
-                box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+                border: 0;
+                border-bottom: 1px solid var(--slate-200);
+                border-radius: 0;
+                box-shadow: none;
             }
 
             .dosen-index .form-label {
@@ -89,37 +92,69 @@
             .dosen-index .btn-reset { color: var(--slate-700); background: var(--white); border: 1px solid var(--slate-500); }
             .dosen-index .btn-reset:hover, .dosen-index .btn-reset:focus { color: var(--white); background: var(--slate-600); border-color: var(--slate-600); }
 
+            .dosen-index .table-card {
+                background: var(--white);
+                border: 0;
+                border-radius: 0;
+                overflow: hidden;
+            }
             .dosen-index .table-responsive { overflow-x: visible; }
-            .dosen-index table { width: 100%; background: var(--white); border-collapse: collapse; }
-            .dosen-index thead th {
-                padding: 12px 10px;
-                color: var(--slate-600);
-                background: var(--slate-100);
+            .dosen-index .table-card .table {
+                --bs-table-bg: #ffffff;
+                --bs-table-color: #0f172a;
+                --bs-table-striped-bg: #ffffff;
+                --bs-table-striped-color: #0f172a;
+                --bs-table-hover-bg: #f8fafc;
+                --bs-table-hover-color: #0f172a;
+                width: 100%;
+                margin-bottom: 0;
+                background: #ffffff;
+                border-collapse: collapse;
+            }
+            .dosen-index .table-card .table > :not(caption) > * > * {
+                box-shadow: none;
+                border-left: 0;
+                border-right: 0;
+            }
+            .dosen-index .table-card thead th {
+                padding: .75rem .625rem;
+                color: var(--slate-500);
+                background: #f1f5f9;
                 border-bottom: 1px solid var(--slate-200);
                 font-size: .75rem;
                 font-weight: 600;
-                letter-spacing: .03em;
+                letter-spacing: .04em;
                 text-transform: uppercase;
             }
-            .dosen-index tbody td {
-                padding: 12px 10px;
-                color: var(--slate-900);
-                border-bottom: 1px solid var(--slate-200);
+            .dosen-index .table-card tbody tr,
+            .dosen-index .table-card tbody td {
+                background-color: #ffffff !important;
+                color: #0f172a !important;
+            }
+            .dosen-index .table-card tbody td {
+                padding: .9rem .625rem;
+                border-bottom: 1px solid #eef2f6;
+                font-size: .875rem;
+                transition: background-color .15s ease;
+            }
+            .dosen-index .table-card tbody tr:hover td {
+                background-color: #f8fafc !important;
+            }
+            .dosen-index .table-card tbody tr:last-child td { border-bottom: 0; }
+            .dosen-index .nip-cell {
+                color: #475569 !important;
+                font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
                 font-size: .875rem;
             }
-            .dosen-index tbody tr:hover td { background: var(--slate-50); }
-            .dosen-index tbody tr:last-child td { border-bottom: 0; }
-            .dosen-index .nip-cell {
-                color: var(--slate-700);
-                font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-            }
+            .dosen-index .name-cell { color: #0f172a !important; font-weight: 600 !important; }
+            .dosen-index .detail-cell { color: #334155 !important; }
             .dosen-index .badge-status {
                 display: inline-flex;
                 padding: 4px 10px;
                 border: 1px solid;
                 border-radius: 9999px;
                 font-size: .75rem;
-                font-weight: 500;
+                font-weight: 600;
             }
             .dosen-index .badge-status-aktif { color: #166534; background: #dcfce7; border-color: #bbf7d0; }
             .dosen-index .badge-status-nonaktif { color: #991b1b; background: #fee2e2; border-color: #fca5a5; }
@@ -152,7 +187,7 @@
         </style>
 
         <div class="card">
-            <div class="filter-panel">
+            <div class="filter-panel mb-0 rounded-0 border-0 border-bottom">
                 <form method="GET" action="{{ route('dosen.index') }}" class="row g-2 align-items-end">
                     <div class="col-12 col-sm-6 col-lg-4">
                         <label for="search" class="form-label">Cari NIP / Nama</label>
@@ -165,31 +200,32 @@
                 </form>
             </div>
 
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th class="text-nowrap">NIP</th>
-                            <th class="text-nowrap">Nama</th>
-                            <th class="text-nowrap">Jabatan</th>
-                            <th class="text-nowrap">Prodi</th>
-                            <th class="text-nowrap">Jurusan</th>
-                            <th class="text-nowrap">Status</th>
-                            <th class="aksi-col text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($dosens as $dsn)
-                        <tr>
-                            <td class="nip-cell text-nowrap">{{ $dsn->nip }}</td>
-                            <td class="text-nowrap fw-medium">{{ $dsn->nama }}</td>
-                            <td class="text-nowrap">{{ $dsn->jabatan ?? '-' }}</td>
-                            <td class="text-nowrap">{{ $dsn->prodi ?? '-' }}</td>
-                            <td class="text-nowrap">{{ $dsn->jurusan }}</td>
-                            <td class="text-nowrap">
-                                <span class="badge-status {{ $dsn->status === 'Aktif' ? 'badge-status-aktif' : 'badge-status-nonaktif' }}">{{ $dsn->status }}</span>
-                            </td>
-                            <td class="aksi-col text-center">
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-nowrap">NIP</th>
+                                <th class="text-nowrap">Nama</th>
+                                <th class="text-nowrap">Jabatan</th>
+                                <th class="text-nowrap">Prodi</th>
+                                <th class="text-nowrap">Jurusan</th>
+                                <th class="text-nowrap">Status</th>
+                                <th class="aksi-col text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($dosens as $dsn)
+                            <tr>
+                                <td class="nip-cell text-nowrap">{{ $dsn->nip }}</td>
+                                <td class="name-cell text-nowrap">{{ $dsn->nama }}</td>
+                                <td class="detail-cell text-nowrap">{{ $dsn->jabatan ?? '-' }}</td>
+                                <td class="detail-cell text-nowrap">{{ $dsn->prodi ?? '-' }}</td>
+                                <td class="detail-cell text-nowrap">{{ $dsn->jurusan }}</td>
+                                <td class="text-nowrap">
+                                    <span class="badge-status {{ $dsn->status === 'Aktif' ? 'badge-status-aktif' : 'badge-status-nonaktif' }}">{{ $dsn->status }}</span>
+                                </td>
+                                <td class="aksi-col text-center">
                                 <div class="d-flex justify-content-center gap-1" role="group" aria-label="Aksi dosen">
                                     <a href="{{ route('dosen.show', $dsn->id) }}" class="action-btn view" title="Detail" aria-label="Detail {{ $dsn->nama }}"><i class="bi bi-eye"></i></a>
                                     <a href="{{ route('dosen.edit', $dsn->id) }}" class="action-btn edit" title="Edit" aria-label="Edit {{ $dsn->nama }}"><i class="bi bi-pencil"></i></a>
@@ -208,6 +244,7 @@
                         @endforelse
                     </tbody>
                 </table>
+                </div>
             </div>
 
             <div class="card-footer py-3">
